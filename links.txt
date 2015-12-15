@@ -1,0 +1,13 @@
+http://classes.design.ucla.edu/Winter11/157B/wp-content/uploads/2011/01/BoardGameTutorialPart31.pdf
+
+http://chessforeva.blogspot.com/2010/10/unity3d-chess-project.html
+
+https://github.com/RodGame/Chess/
+https://learninggeekblog.wordpress.com/2013/04/29/chess-part1-board-and-basic-movement/
+
+http://forum.unity3d.com/threads/turnbased-toolkit-tbtk.195426/
+
+http://designagame.eu/2014/06/game-development-unity-2d-part-5-grid-roman-centuriae/
+
+
+http://wiki.unity3d.com/index.php/GridMove
