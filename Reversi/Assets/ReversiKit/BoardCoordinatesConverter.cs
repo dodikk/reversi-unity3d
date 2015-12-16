@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Collections.Generic;
 
 
 namespace ReversiKit
@@ -12,13 +13,13 @@ namespace ReversiKit
 
 		public static ICellCoordinates CellNameToCoordinates(string cellName)
 		{
+			setupMappingIfNeeded();
 			Debug.Assert(2 == cellName.Length);
 
 
-			// TODO : rewrite if the invariant does not work for Unicode
 			char[] cellNameParts = cellName.ToCharArray ();
-			int row = cellNameParts[0] - 'A';
-			int column = cellNameParts [0] - '0';
+			int row = letterToIndex[cellNameParts[0]];
+			int column = Int32.Parse(cellNameParts[1].ToString()) - 1;
 
 			Debug.Assert (row >= 0);
 			Debug.Assert (row < 8);
@@ -31,18 +32,45 @@ namespace ReversiKit
 
 		public static string CoordinatesToCellName(ICellCoordinates cellPoint)
 		{
+			setupMappingIfNeeded();
+			
 			Debug.Assert (cellPoint.Row >= 0);
 			Debug.Assert (cellPoint.Row < 8);
 
 			Debug.Assert (cellPoint.Column >= 0);
 			Debug.Assert (cellPoint.Column < 8);
 
-			char cRow = (char)(cellPoint.Row + (int)'A');
-			char cColumn = (char)(cellPoint.Column + (int)'0');
+			char cRow = indexToLetter[cellPoint.Row];
+			char cColumn = Convert.ToChar(cellPoint.Column);
 
 			string result = cRow.ToString () + cColumn.ToString ();
 			return result;
 		}
+
+		private static void setupMappingIfNeeded()
+		{
+			if (null == letterToIndex)
+			{
+				letterToIndex = new Dictionary<char, int>();
+				letterToIndex.Add('A', 0);
+				letterToIndex.Add('B', 1);
+				letterToIndex.Add('C', 2);
+				letterToIndex.Add('D', 3);
+				letterToIndex.Add('E', 4);
+				letterToIndex.Add('F', 5);
+				letterToIndex.Add('G', 6);
+				letterToIndex.Add('H', 7);
+			}
+
+
+			if (null == indexToLetter)
+			{
+				indexToLetter = new char[] {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'};
+			}
+		}
+
+		private static Dictionary<char, int> letterToIndex;
+		private static char[] indexToLetter;
 	}
 }
 
