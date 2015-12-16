@@ -1,11 +1,19 @@
 fileFormatVersion: 2
 guid: 675ce738300944c6aad497634f9164a2
-timeCreated: 1450203072
+timeCreated: 1450279843
 licenseType: Free
 MonoImporter:
   serializedVersion: 2
   defaultReferences:
   - _turnLabel: {fileID: 10265206, guid: 6b93290400504447b832a68e5183fab7, type: 2}
+  - _whiteItemMaterial: {fileID: 2100000, guid: 160df9e56774841b882f6879da069522,
+      type: 2}
+  - _blackItemMaterial: {fileID: 2100000, guid: 7fe0c9aa683e94b769db9900817d863a,
+      type: 2}
+  - _ballD5: {instanceID: 0}
+  - _ballE5: {instanceID: 0}
+  - _ballD4: {instanceID: 0}
+  - _ballE4: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
