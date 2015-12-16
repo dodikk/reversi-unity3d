@@ -3,6 +3,7 @@ using System.Collections;
 
 using Unity.Linq;
 using System.Linq;
+using ReversiKit;
 
 public class BoardEventsHandler : MonoBehaviour {
 
@@ -22,6 +23,7 @@ public class BoardEventsHandler : MonoBehaviour {
 		populateCellsList ();
 		populateCellsMatrix ();
 		setSampleTurnText ();
+		doSampleTurn ();
 	}
 	
 	// Update is called once per frame
@@ -32,6 +34,18 @@ public class BoardEventsHandler : MonoBehaviour {
 
 
 	#region Cells Initialization
+	private void doSampleTurn()
+	{
+		ICellCoordinates newItemPosition = BoardCoordinatesConverter.CellNameToCoordinates ("C5");
+		GameObject cell = this._cellsMatrix [newItemPosition.Row, newItemPosition.Column];
+		var cellPosition = cell.transform.position;
+
+		var sphere = GameObject.CreatePrimitive (PrimitiveType.Sphere);
+		sphere.transform.position = new Vector3 (cellPosition.x, cellPosition.y, cellPosition.z - 1);
+	}
+
+
+
 	private void populateCellsList()
 	{
 		this._cellsList = this._root.Descendants().Where(x => x.tag == "FieldCell").OrderBy(x => x.name).ToArray();
