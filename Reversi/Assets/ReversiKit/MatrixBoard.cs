@@ -58,6 +58,25 @@ namespace ReversiKit
 		}
 		#endregion
 
+		#region Mutable Text
+		public void TryConsumeNamedCellByBlackPlayer(string cellName, bool isBlackPlayer)
+		{
+			ICellCoordinates cellPosition = BoardCoordinatesConverter.CellNameToCoordinates(cellName);
+			this.TryConsumeCellByBlackPlayer(cellPosition, isBlackPlayer);
+		}
+
+		public void TryConsumeNamedCellByBlackPlayer(string cellName)
+		{
+			this.TryConsumeNamedCellByBlackPlayer(cellName, true);
+		}
+
+		public void TryConsumeNamedCellByWhitePlayer(string cellName)
+		{
+			this.TryConsumeNamedCellByBlackPlayer(cellName, false);
+		}
+		#endregion
+
+
 		private int[,] _cells;
 
 		private const int BOARD_SIZE = 8;
