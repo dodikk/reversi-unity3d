@@ -42,10 +42,33 @@ namespace ReversiKitTest
 			var turns = this._sut.GetValidTurnsForBoard(this._initialBoard);
 			Assert.IsNotNull(turns);
 
-			var turnsCount = turns.Count(t => true);
+			var turnsCount = turns.Count();
 			Assert.AreEqual(4, turnsCount);
+
+			IReversiTurn turn = null;
+			ICellCoordinates position = null;
+			ICellCoordinates flippedCell = null;
+
+			{
+				position = BoardCoordinatesConverter.CellNameToCoordinates("C5");
+				turn =  turns.Where
+				(
+					t => (t.Position.Row == position.Row &&
+						t.Position.Column == position.Column)
+				).First();
+
+				Assert.IsNotNull(turn);
+				Assert.AreEqual(1, turn.PositionsOfFlippedItems.Count());
+
+				flippedCell = turn.PositionsOfFlippedItems.First();
+				Assert.IsNotNull(flippedCell);
+
+				string flippedCellName = BoardCoordinatesConverter.CoordinatesToCellName(flippedCell);
+				Assert.AreEqual("C5", flippedCellName);
+			}
 		}
 	
+
 
 	}
 }
