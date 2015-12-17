@@ -22,20 +22,19 @@ namespace ReversiKit
 		#region IBoardState
 		public  bool IsCellFree(ICellCoordinates position)
 		{
-			throw new NotImplementedException ();
+			return (FREE_CELL == this._cells[position.Row, position.Column]);
 		}
 
 		public bool IsCellTakenByBlack(ICellCoordinates position)
 		{
-			throw new NotImplementedException ();
+			return (TAKEN_BY_BLACK == this._cells[position.Row, position.Column]);
 		}
 
 		public bool IsCellTakenByWhite(ICellCoordinates position)
 		{
-			throw new NotImplementedException ();
+			return (TAKEN_BY_WHITE == this._cells[position.Row, position.Column]);
 		}
 		#endregion
-
 
 		#region Mutable
 		public void TryConsumeCellByBlackPlayer(ICellCoordinates cellPosition)
@@ -58,7 +57,6 @@ namespace ReversiKit
 			this._cells [cellPosition.Row, cellPosition.Column] = isBlackPlayer ? TAKEN_BY_BLACK : TAKEN_BY_WHITE;
 		}
 		#endregion
-
 
 		private int[,] _cells;
 
