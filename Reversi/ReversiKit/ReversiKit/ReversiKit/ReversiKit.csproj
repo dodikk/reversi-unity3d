@@ -50,6 +50,9 @@
     <Compile Include="..\..\..\Assets\ReversiKit\IReversiTurn.cs">
       <Link>IReversiTurn.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\Assets\ReversiKit\IBoardState.cs">
+      <Link>IBoardState.cs</Link>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
