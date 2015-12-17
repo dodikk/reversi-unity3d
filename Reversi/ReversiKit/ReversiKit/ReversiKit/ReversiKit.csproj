@@ -39,10 +39,10 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="..\..\..\Assets\ReversiKit\BoardCoordinatesConverter.cs">
-      <Link>BoardCoordinatesConverter.cs</Link>
+      <Link>Impl\BoardCoordinatesConverter.cs</Link>
     </Compile>
     <Compile Include="..\..\..\Assets\ReversiKit\CellCoordinates.cs">
-      <Link>CellCoordinates.cs</Link>
+      <Link>Impl\CellCoordinates.cs</Link>
     </Compile>
     <Compile Include="..\..\..\Assets\ReversiKit\ICellCoordinates.cs">
       <Link>ICellCoordinates.cs</Link>
@@ -53,9 +53,21 @@
     <Compile Include="..\..\..\Assets\ReversiKit\IBoardState.cs">
       <Link>IBoardState.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\Assets\ReversiKit\ITurnCalculator.cs">
+      <Link>ITurnCalculator.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\ReversiKit\ITurnSelector.cs">
+      <Link>ITurnSelector.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\ReversiKit\ITurnValidator.cs">
+      <Link>ITurnValidator.cs</Link>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Impl\" />
   </ItemGroup>
 </Project>
