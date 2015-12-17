@@ -36,6 +36,16 @@ namespace ReversiKitTest
 		}
 
 
+
+		// 8 x x x x x x x x
+		// 7 x x x x x x x x
+		// 6 x x T x x x x x
+		// 5 x T W B x x x x
+		// 4 x x B W T x x x
+		// 3 x x x T x x x x
+		// 2 x x x x x x x x
+		// 1 x x x x x x x x
+		// A B C D E F G H
 		[Test]
 		public void TestTurnsForInitialState()
 		{
@@ -64,10 +74,74 @@ namespace ReversiKitTest
 				Assert.IsNotNull(flippedCell);
 
 				string flippedCellName = BoardCoordinatesConverter.CoordinatesToCellName(flippedCell);
-				Assert.AreEqual("C5", flippedCellName);
+				Assert.AreEqual("D5", flippedCellName);
+			}
+
+			{
+				position = BoardCoordinatesConverter.CellNameToCoordinates("D6");
+				turn =  turns.Where
+					(
+						t => (t.Position.Row == position.Row &&
+							t.Position.Column == position.Column)
+					).First();
+
+				Assert.IsNotNull(turn);
+				Assert.AreEqual(1, turn.PositionsOfFlippedItems.Count());
+
+				flippedCell = turn.PositionsOfFlippedItems.First();
+				Assert.IsNotNull(flippedCell);
+
+				string flippedCellName = BoardCoordinatesConverter.CoordinatesToCellName(flippedCell);
+				Assert.AreEqual("D5", flippedCellName);
+			}
+
+			{
+				position = BoardCoordinatesConverter.CellNameToCoordinates("F4");
+				turn =  turns.Where
+					(
+						t => (t.Position.Row == position.Row &&
+							t.Position.Column == position.Column)
+					).First();
+
+				Assert.IsNotNull(turn);
+				Assert.AreEqual(1, turn.PositionsOfFlippedItems.Count());
+
+				flippedCell = turn.PositionsOfFlippedItems.First();
+				Assert.IsNotNull(flippedCell);
+
+				string flippedCellName = BoardCoordinatesConverter.CoordinatesToCellName(flippedCell);
+				Assert.AreEqual("E4", flippedCellName);
+			}
+
+			{
+				position = BoardCoordinatesConverter.CellNameToCoordinates("E3");
+				turn =  turns.Where
+					(
+						t => (t.Position.Row == position.Row &&
+							t.Position.Column == position.Column)
+					).First();
+
+				Assert.IsNotNull(turn);
+				Assert.AreEqual(1, turn.PositionsOfFlippedItems.Count());
+
+				flippedCell = turn.PositionsOfFlippedItems.First();
+				Assert.IsNotNull(flippedCell);
+
+				string flippedCellName = BoardCoordinatesConverter.CoordinatesToCellName(flippedCell);
+				Assert.AreEqual("E4", flippedCellName);
 			}
 		}
 	
+
+		// 8 x x x x x x x x
+		// 7 x x x x x x x x
+		// 6 x x x x x x x x
+		// 5 x x x x x x x x
+		// 4 x x x x x x x x
+		// 3 x x x x x x x x
+		// 2 x x x x x x x x
+		// 1 x x x x x x x x
+		// A B C D E F G H
 
 
 	}
