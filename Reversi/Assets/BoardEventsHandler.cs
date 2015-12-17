@@ -41,7 +41,7 @@ public class BoardEventsHandler : MonoBehaviour {
 		ICellCoordinates newItemPosition = BoardCoordinatesConverter.CellNameToCoordinates("C5");
 		//UnityEngine.Debug.LogError("C5 coordinates : " + newItemPosition.Row.ToString() + ", " + newItemPosition.Column.ToString());
 
-		GameObject cellC5 = this._cellsMatrix [newItemPosition.Row, newItemPosition.Column];
+		GameObject cellC5 = this._cellsMatrix[newItemPosition.Row, newItemPosition.Column];
 		var cellPosition = cellC5.transform.position;
 
 		var sphere = GameObject.CreatePrimitive (PrimitiveType.Sphere);
@@ -79,16 +79,22 @@ public class BoardEventsHandler : MonoBehaviour {
 		this._cellsMatrix = new GameObject[BOARD_SIZE,BOARD_SIZE];
 
 		for (int row = 0; row != BOARD_SIZE; ++row)
-			for (int column = 0; column != 8; ++column) 
+			for (int column = 0; column != BOARD_SIZE; ++column) 
 			{
 				int flatIndex = row * BOARD_SIZE + column;
-				this._cellsMatrix [row,column] = this._cellsList[flatIndex];
+				var cell = this._cellsList[flatIndex];
+				string cellName = cell.name;
+
+				var cellPosition = BoardCoordinatesConverter.CellNameToCoordinates(cellName);
+				this._cellsMatrix [cellPosition.Row, cellPosition.Column] = cell;
 			}
 	}
 
 	private void setSampleTurnText()
 	{
-		GameObject C2CellFromMatrix = this._cellsMatrix [2, 1];
+		var cellPosition = BoardCoordinatesConverter.CellNameToCoordinates("C2");
+
+		GameObject C2CellFromMatrix = this._cellsMatrix[cellPosition.Row, cellPosition.Column];
 		this._turnLabel.text = C2CellFromMatrix.name;
 
 		//		UnityEngine.Debug.LogError ("A1Cell matrix name : " + A1CellFromMatrix.name);
@@ -99,11 +105,17 @@ public class BoardEventsHandler : MonoBehaviour {
 	{
 		this._ballsMatrix = new GameObject[8, 8];
 		{
-			this._ballsMatrix[3, 3] = this._ballD4;
-			this._ballsMatrix[3, 4] = this._ballD5;
+			var d4Pos = BoardCoordinatesConverter.CellNameToCoordinates("D4");
+			this._ballsMatrix[d4Pos.Row, d4Pos.Column] = this._ballD4;
 
-			this._ballsMatrix[4, 3] = this._ballE4;
-			this._ballsMatrix[4, 4] = this._ballE5;
+			var d5Pos = BoardCoordinatesConverter.CellNameToCoordinates("D5");
+			this._ballsMatrix[d5Pos.Row, d5Pos.Column] = this._ballD5;
+
+			var e4Pos = BoardCoordinatesConverter.CellNameToCoordinates("E4");
+			this._ballsMatrix[e4Pos.Row, e4Pos.Column] = this._ballE4;
+
+			var e5Pos = BoardCoordinatesConverter.CellNameToCoordinates("E5");
+			this._ballsMatrix[e5Pos.Row, e5Pos.Column] = this._ballE5;
 		}
 	}
 	#endregion
