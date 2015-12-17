@@ -5,7 +5,7 @@ namespace ReversiKit
 {
 	public interface ITurnCalculator
 	{
-		IEnumerable<IReversiTurn> getValidTurnsForBoard(IBoardState board);
+		IEnumerable<IReversiTurn> GetValidTurnsForBoard(IBoardState board);
 	}
 }
 

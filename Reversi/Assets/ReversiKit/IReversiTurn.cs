@@ -5,8 +5,8 @@ namespace ReversiKit
 {
 	public interface IReversiTurn
 	{
-		ICellCoordinates position { get; }
-		IEnumerable<ICellCoordinates> positionsOfFlippedItems { get; }
+		ICellCoordinates Position { get; }
+		IEnumerable<ICellCoordinates> PositionsOfFlippedItems { get; }
 	}
 }
 
