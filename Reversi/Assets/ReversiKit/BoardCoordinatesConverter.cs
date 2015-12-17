@@ -2,6 +2,10 @@
 using System.Diagnostics;
 using System.Collections.Generic;
 
+#if NO_UNITY
+using Conditions.Guards;
+#endif
+
 
 namespace ReversiKit
 {
@@ -14,18 +18,19 @@ namespace ReversiKit
 		public static ICellCoordinates CellNameToCoordinates(string cellName)
 		{
 			setupMappingIfNeeded();
-			Debug.Assert(2 == cellName.Length);
 
+			#if NO_UNITY
+			Check.If (cellName.Length).IsBetween (2, 2);
+			#endif
 
 			char[] cellNameParts = cellName.ToCharArray ();
-			int row = letterToIndex[cellNameParts[0]];
-			int column = Int32.Parse(cellNameParts[1].ToString()) - 1;
+			int column = letterToIndex[cellNameParts[0]];
+			int row = Int32.Parse(cellNameParts[1].ToString()) - 1;
 
-			Debug.Assert (row >= 0);
-			Debug.Assert (row < 8);
-
-			Debug.Assert (column >= 0);
-			Debug.Assert (column < 8);
+			#if NO_UNITY
+			Check.If (row).IsBetween(0, 7);
+			Check.If (column).IsBetween(0, 7);
+			#endif
 
 			return new CellCoordinates (row, column);
 		}
@@ -33,17 +38,16 @@ namespace ReversiKit
 		public static string CoordinatesToCellName(ICellCoordinates cellPoint)
 		{
 			setupMappingIfNeeded();
-			
-			Debug.Assert (cellPoint.Row >= 0);
-			Debug.Assert (cellPoint.Row < 8);
 
-			Debug.Assert (cellPoint.Column >= 0);
-			Debug.Assert (cellPoint.Column < 8);
+			#if NO_UNITY
+			Check.If (cellPoint.Row).IsBetween(0, 7);
+			Check.If (cellPoint.Column).IsBetween(0, 7);
+			#endif
 
-			char cRow = indexToLetter[cellPoint.Row];
-			char cColumn = Convert.ToChar(cellPoint.Column);
+			char cColumn = indexToLetter[cellPoint.Row];
+			char cRow = Convert.ToChar(cellPoint.Column);
 
-			string result = cRow.ToString () + cColumn.ToString ();
+			string result = cColumn.ToString () + cRow.ToString ();
 			return result;
 		}
 
