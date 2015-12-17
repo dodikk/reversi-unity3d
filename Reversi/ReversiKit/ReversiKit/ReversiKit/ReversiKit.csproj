@@ -62,7 +62,9 @@
     <Compile Include="..\..\..\Assets\ReversiKit\ITurnValidator.cs">
       <Link>ITurnValidator.cs</Link>
     </Compile>
-    <Compile Include="Impl\MatrixBoard.cs" />
+    <Compile Include="..\..\..\Assets\ReversiKit\MatrixBoard.cs">
+      <Link>Impl\MatrixBoard.cs</Link>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
