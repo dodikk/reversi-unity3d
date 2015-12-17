@@ -6,9 +6,13 @@ namespace ReversiKit
 	{
 		public MatrixBoard ()
 		{
+			this.IsTurnOfBlackPlayer = true;
+
 			this._cells = new int[BOARD_SIZE, BOARD_SIZE];
 			this.ZeroCells ();
 		}
+
+
 
 		private void ZeroCells()
 		{
@@ -20,6 +24,8 @@ namespace ReversiKit
 		}
 
 		#region IBoardState
+		public bool IsTurnOfBlackPlayer { get; set; }
+
 		public  bool IsCellFree(ICellCoordinates position)
 		{
 			return (FREE_CELL == this._cells[position.Row, position.Column]);
