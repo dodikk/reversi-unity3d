@@ -44,8 +44,8 @@ namespace ReversiKit
 			Check.If (cellPoint.Column).IsBetween(0, 7);
 			#endif
 
-			char cColumn = indexToLetter[cellPoint.Row];
-			char cRow = Convert.ToChar(cellPoint.Column);
+			char cColumn = indexToLetter[cellPoint.Column];
+			string cRow = (cellPoint.Row + 1).ToString();
 
 			string result = cColumn.ToString () + cRow.ToString ();
 			return result;
