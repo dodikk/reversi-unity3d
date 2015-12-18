@@ -5,10 +5,10 @@ using System.Collections;
 using Unity.Linq;
 using System.Linq;
 using ReversiKit;
+using System.Collections.Generic;
 
-public class BoardEventsHandler : MonoBehaviour {
-
-
+public class BoardEventsHandler : MonoBehaviour 
+{
 	#region MonoBehaviour override
 	// Use this for initialization
 	void Start () 
@@ -25,23 +25,111 @@ public class BoardEventsHandler : MonoBehaviour {
 		this._root = GameObject.Find("root"); 
 //		UnityEngine.Debug.LogError ("Root : " + root.ToString ());
 
+
+		// Using lowercase methods in this class 
+		// to distinguish own methods from built-in unity methods
 		populateBallsList();
 		populateCellsList ();
 		populateCellsMatrix ();
-		setSampleTurnText ();
-		// doSampleTurn ();
-
-		highlightAvailableTurnsSample();
+		getAvailableTurns();
 	}
 	
 	// Update is called once per frame
-	void Update () 
+	void Update() 
 	{
+		updateTurnLabel();
+		highlightAvailableTurns(true);
+
+		bool isMouseUpEvent = Input.GetMouseButtonUp(0);
+		if (isMouseUpEvent)
+		{
+			this.handleMouseUpEvent();
+		}
 	}
 	#endregion
 
 
-	#region Cells Initialization
+	private void handleMouseUpEvent()
+	{
+		Vector3 mousePosition = Input.mousePosition;
+		Ray ray = Camera.main.ScreenPointToRay(mousePosition);
+
+		RaycastHit hitInfo;
+		bool hit = Physics.Raycast(ray, out hitInfo);
+		if (!hit)
+		{
+			return;
+		}
+
+		GameObject selectedCellOrBall = hitInfo.transform.gameObject;
+		bool isCell = (CELL_TAG == selectedCellOrBall.tag);
+		if (isCell)
+		{
+			this.handleTapOnCell(selectedCellOrBall);
+		}
+	}
+
+	private void handleTapOnCell(GameObject cellCube)
+	{
+		Material activePlayerColour = 
+			this._boardModel.IsTurnOfBlackPlayer ? 
+			this._blackItemMaterial : 
+			this._whiteItemMaterial ;
+
+
+		// TODO : maybe select 
+		string cellName = cellCube.name;
+
+
+	}
+
+	private void updateTurnLabel()
+	{
+		this._turnLabel.text = 
+			this._boardModel.IsTurnOfBlackPlayer ? 
+			"Black Player Turn" :
+			"White Player Turn" ;
+	}
+
+	private void getAvailableTurns()
+	{
+		var turns = this._turnCalculator.GetValidTurnsForBoard(this._boardModel);
+		this._validTurns = turns;
+		this._turnCellNames = turns.Select(t =>
+		{
+			return BoardCoordinatesConverter.CoordinatesToCellName(t.Position);
+		});
+	}
+
+	private void highlightAvailableTurns(bool shouldHighlight)
+	{
+		var turns = this._validTurns;
+
+		foreach (IReversiTurn singleTurn in turns)
+		{
+			ICellCoordinates turnCell = singleTurn.Position;
+			GameObject cellCube = this._cellsMatrix[turnCell.Row, turnCell.Column];
+
+			Material cellColour = null;
+
+			if (shouldHighlight)
+			{
+				cellColour = this._highlightedCellMaterial;
+			} 
+			else
+			{
+				cellColour = 
+					turnCell.IsBlack 		? 
+					this._blackCellMaterial : 
+					this._whiteCellMaterial ;
+				
+			}
+			cellCube.GetComponent<Renderer>().material = cellColour;
+		}
+	}
+		
+
+	#region Prototyping
 	private void doSampleTurn()
 	{
 		ICellCoordinates newItemPosition = BoardCoordinatesConverter.CellNameToCoordinates("C5");
@@ -64,7 +152,7 @@ public class BoardEventsHandler : MonoBehaviour {
 
 		// change material
 		ICellCoordinates d5Position = BoardCoordinatesConverter.CellNameToCoordinates("D5");
-//		GameObject cellD5 = this._cellsMatrix[d5Position.Row, d5Position.Column];
+		//		GameObject cellD5 = this._cellsMatrix[d5Position.Row, d5Position.Column];
 		GameObject ballD5 = this._ballsMatrix[d5Position.Row, d5Position.Column];
 		{
 			var d5Renderer = ballD5.GetComponent<Renderer>();
@@ -72,17 +160,20 @@ public class BoardEventsHandler : MonoBehaviour {
 		}
 	}
 
-	private void highlightAvailableTurnsSample()
+	private void setSampleTurnText()
 	{
-		var turns = this._turnCalculator.GetValidTurnsForBoard(this._boardModel);
-		foreach (IReversiTurn singleTurn in turns)
-		{
-			ICellCoordinates turnCell = singleTurn.Position;
-			GameObject cellCube = this._cellsMatrix[turnCell.Row, turnCell.Column];
-			cellCube.GetComponent<Renderer>().material = this._highlightedCellMaterial;
-		}
+		var cellPosition = BoardCoordinatesConverter.CellNameToCoordinates("C2");
+
+		GameObject C2CellFromMatrix = this._cellsMatrix[cellPosition.Row, cellPosition.Column];
+		this._turnLabel.text = C2CellFromMatrix.name;
+
+		//		UnityEngine.Debug.LogError ("A1Cell matrix name : " + A1CellFromMatrix.name);
+		//		UnityEngine.Debug.LogError ("Turn text : " + this._turnLabel.text);
 	}
 
+	#endregion
+
+	#region Cells Initialization
 	private void populateCellsList()
 	{
 		this._cellsList = this._root.Descendants().Where(x => x.tag == "FieldCell").OrderBy(x => x.name).ToArray();
@@ -103,17 +194,6 @@ public class BoardEventsHandler : MonoBehaviour {
 				var cellPosition = BoardCoordinatesConverter.CellNameToCoordinates(cellName);
 				this._cellsMatrix [cellPosition.Row, cellPosition.Column] = cell;
 			}
-	}
-
-	private void setSampleTurnText()
-	{
-		var cellPosition = BoardCoordinatesConverter.CellNameToCoordinates("C2");
-
-		GameObject C2CellFromMatrix = this._cellsMatrix[cellPosition.Row, cellPosition.Column];
-		this._turnLabel.text = C2CellFromMatrix.name;
-
-		//		UnityEngine.Debug.LogError ("A1Cell matrix name : " + A1CellFromMatrix.name);
-		//		UnityEngine.Debug.LogError ("Turn text : " + this._turnLabel.text);
 	}
 
 	private void populateBallsList()
@@ -169,6 +249,10 @@ public class BoardEventsHandler : MonoBehaviour {
 
 	#endregion
 
+	private const int    BOARD_SIZE = 			8;
+	private const string CELL_TAG   = "FieldCell";
+	private const string BALL_TAG   = 	   "Ball";
 
-	private static int BOARD_SIZE = 8;
+	private IEnumerable<IReversiTurn> _validTurns	;
+	private IEnumerable<string> 	  _turnCellNames;
 }
