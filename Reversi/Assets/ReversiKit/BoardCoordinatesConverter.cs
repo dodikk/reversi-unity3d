@@ -30,8 +30,8 @@ namespace ReversiKit
 			int row = Int32.Parse(cellNameParts[1].ToString()) - 1;
 
 			#if NO_UNITY
-			Check.If (row).IsBetween(0, 7);
-			Check.If (column).IsBetween(0, 7);
+            Check.If (row).IsBetween(0, MatrixBoard.BOARD_SIZE - 1);
+            Check.If (column).IsBetween(0, MatrixBoard.BOARD_SIZE - 1);
 			#endif
 
 			return new CellCoordinates (row, column);
@@ -42,8 +42,8 @@ namespace ReversiKit
 			setupMappingIfNeeded();
 
 			#if NO_UNITY
-			Check.If (cellPoint.Row).IsBetween(0, 7);
-			Check.If (cellPoint.Column).IsBetween(0, 7);
+            Check.If (cellPoint.Row).IsBetween(0, MatrixBoard.BOARD_SIZE - 1);
+            Check.If (cellPoint.Column).IsBetween(0, MatrixBoard.BOARD_SIZE - 1);
 			#endif
 
 			char cColumn = indexToLetter[cellPoint.Column];
