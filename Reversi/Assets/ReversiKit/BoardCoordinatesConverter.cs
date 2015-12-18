@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 // TODO : Make NuGet work properly with Unity3D
 // 
+using System.Linq;
+
+
 #if NO_UNITY
 using Conditions.Guards;
 #endif
@@ -52,6 +55,14 @@ namespace ReversiKit
 			string result = cColumn.ToString () + cRow.ToString ();
 			return result;
 		}
+
+        public static string PrintCoordinates(IEnumerable<ICellCoordinates> cells)
+        {
+            var resultNames = cells.Select(c => BoardCoordinatesConverter.CoordinatesToCellName(c));
+            string debugResultNames = String.Join("; ", resultNames.ToArray());
+
+            return debugResultNames;
+        }
 
 		private static void setupMappingIfNeeded()
 		{
