@@ -57,8 +57,8 @@ namespace ReversiKit
 		public  bool IsCellFree(ICellCoordinates position)
 		{
             #if NO_UNITY
-            Check.If(position.Row   ).IsBetween(0, BOARD_SIZE - 1);
-            Check.If(position.Column).IsBetween(0, BOARD_SIZE - 1);
+            Check.If(position.Row   ).IsBetween(0, BOARD_MAX_INDEX);
+            Check.If(position.Column).IsBetween(0, BOARD_MAX_INDEX);
             #endif
 
 			return (FREE_CELL == this._cells[position.Row, position.Column]);
@@ -67,8 +67,8 @@ namespace ReversiKit
 		public bool IsCellTakenByBlack(ICellCoordinates position)
 		{
             #if NO_UNITY
-            Check.If(position.Row).IsBetween(0, BOARD_SIZE - 1);
-            Check.If(position.Column).IsBetween(0, BOARD_SIZE - 1);
+            Check.If(position.Row).IsBetween(0, BOARD_MAX_INDEX);
+            Check.If(position.Column).IsBetween(0, BOARD_MAX_INDEX);
             #endif
 
 			return (TAKEN_BY_BLACK == this._cells[position.Row, position.Column]);
@@ -77,8 +77,8 @@ namespace ReversiKit
 		public bool IsCellTakenByWhite(ICellCoordinates position)
 		{
             #if NO_UNITY
-            Check.If(position.Row   ).IsBetween(0, BOARD_SIZE - 1);
-            Check.If(position.Column).IsBetween(0, BOARD_SIZE - 1);
+            Check.If(position.Row   ).IsBetween(0, BOARD_MAX_INDEX);
+            Check.If(position.Column).IsBetween(0, BOARD_MAX_INDEX);
             #endif
 
 			return (TAKEN_BY_WHITE == this._cells[position.Row, position.Column]);
@@ -121,8 +121,7 @@ namespace ReversiKit
 					      .Distinct();
 
 
-            var resultNames = result.Select(c => BoardCoordinatesConverter.CoordinatesToCellName(c));
-            string debugResultNames = String.Join("; ", resultNames.ToArray());
+            string debugResultNames = BoardCoordinatesConverter.PrintCoordinates(result);
             Debug.WriteLine(debugResultNames);
 
 			return result;
@@ -141,7 +140,7 @@ namespace ReversiKit
                     
                 result.Add(new CellCoordinates(position.Row - 1, position.Column));
 
-                if (BOARD_SIZE != position.Column)
+                if (position.Column < BOARD_MAX_INDEX)
                 {
                     result.Add(new CellCoordinates(position.Row - 1, position.Column + 1));
                 }
@@ -153,13 +152,13 @@ namespace ReversiKit
                     result.Add(new CellCoordinates(position.Row, position.Column - 1));
                 }
 
-                if (BOARD_SIZE != position.Column)
+                if (position.Column < BOARD_MAX_INDEX)
                 {
                     result.Add(new CellCoordinates(position.Row, position.Column + 1));
                 }
             }
 
-            if (BOARD_SIZE != position.Row)
+            if (position.Row < BOARD_MAX_INDEX)
             {
                 if (0 != position.Column)
                 {
@@ -168,13 +167,20 @@ namespace ReversiKit
 
                 result.Add(new CellCoordinates(position.Row + 1, position.Column));
 
-                if (BOARD_SIZE != position.Column)
+                if (position.Column < BOARD_MAX_INDEX)
                 {
                     result.Add(new CellCoordinates(position.Row + 1, position.Column + 1));
                 }
             }
 
 
+            #if NO_UNITY
+            foreach (ICellCoordinates c in result)
+            {
+                Check.If(c.Row   ).IsBetween(0, BOARD_MAX_INDEX);
+                Check.If(c.Column).IsBetween(0, BOARD_MAX_INDEX);
+            }
+            #endif
 
 			return result;
 		}
@@ -200,8 +206,8 @@ namespace ReversiKit
 
 
             #if NO_UNITY
-            Check.If(cellPosition.Row   ).IsBetween(0, BOARD_SIZE - 1);
-            Check.If(cellPosition.Column).IsBetween(0, BOARD_SIZE - 1);
+            Check.If(cellPosition.Row   ).IsBetween(0, BOARD_MAX_INDEX);
+            Check.If(cellPosition.Column).IsBetween(0, BOARD_MAX_INDEX);
             #endif
 			this._cells [cellPosition.Row, cellPosition.Column] = isBlackPlayer ? TAKEN_BY_BLACK : TAKEN_BY_WHITE;
 		}
@@ -234,6 +240,7 @@ namespace ReversiKit
         private ICellCoordinates[] _flattenCells;
 
 		public const int BOARD_SIZE = 8;
+        public const int BOARD_MAX_INDEX = BOARD_SIZE - 1;
 
 		private const int FREE_CELL = 0;
 		private const int TAKEN_BY_WHITE = 1;
