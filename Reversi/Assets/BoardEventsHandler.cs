@@ -39,6 +39,7 @@ public class BoardEventsHandler : MonoBehaviour
 	void Update() 
 	{
 		this.updateTurnLabel();
+        this.updateBallColours();
 		this.highlightAvailableTurns();
 
 		bool isMouseUpEvent = Input.GetMouseButtonUp(0);
@@ -95,6 +96,7 @@ public class BoardEventsHandler : MonoBehaviour
         this.drawChangesForTurn(turn);
         this._boardModel.ApplyTurn(turn);
         this.getAvailableTurns();
+        this.highlightAvailableTurns();
 	}
 
     private void drawChangesForTurn(IReversiTurn turn)
@@ -129,6 +131,8 @@ public class BoardEventsHandler : MonoBehaviour
             renderer.receiveShadows = false;
             renderer.material = this._blackItemMaterial;
         }
+
+        this._ballsMatrix[cell.Row, cell.Column] = sphere;
     }
 
     private void setColourForBallAtCell(Material activePlayerColour, ICellCoordinates cell)
@@ -149,6 +153,23 @@ public class BoardEventsHandler : MonoBehaviour
 		var turns = this._turnCalculator.GetValidTurnsForBoard(this._boardModel);
 		this._validTurns = turns;
 	}
+
+    private void updateBallColours()
+    {
+        for (int row = 0; row != BOARD_SIZE; ++row)
+            for (int col = 0; col != BOARD_SIZE; ++col)
+            {
+                ICellCoordinates cell = new CellCoordinates(row, col);
+                if (this._boardModel.IsCellTakenByBlack(cell))
+                {
+                    this.setColourForBallAtCell(this._blackItemMaterial, cell);
+                } 
+                else if (this._boardModel.IsCellTakenByWhite(cell))
+                {
+                    this.setColourForBallAtCell(this._whiteItemMaterial, cell);
+                }
+            }
+    }
 
 	#region Turn Highlight
 	private void unhighlightAvailableTurns()
@@ -273,8 +294,32 @@ public class BoardEventsHandler : MonoBehaviour
     {
         // Hot fix : the material references from the editor turn out to be "null"
 
-        this._blackCellMaterial = this._cellsMatrix[0, 0].GetComponent<Renderer>().material;
-        this._whiteCellMaterial = this._cellsMatrix[1, 0].GetComponent<Renderer>().material;
+        if (null == this._blackItemMaterial)
+        {
+            this._blackItemMaterial = this._ballsMatrix[3, 3].GetComponent<Renderer>().material;
+        }
+        if (null == this._whiteItemMaterial)
+        {
+            this._whiteItemMaterial = this._ballsMatrix[3, 4].GetComponent<Renderer>().material;
+        }
+
+        if (null == this._blackCellMaterial)
+        {
+            this._blackCellMaterial = this._cellsMatrix[0, 0].GetComponent<Renderer>().material;
+        }
+
+        if (null == this._whiteCellMaterial)
+        {
+            this._whiteCellMaterial = this._cellsMatrix[0, 1].GetComponent<Renderer>().material;
+        }
+
+//        this._blackCellMaterial = Resources.Load("chessboard_min2-czarny.mat", typeof(Material)) as Material;
+//        this._whiteCellMaterial = Resources.Load("wood_ash_clear.mat", typeof(Material)) as Material;
+//
+//        this._blackItemMaterial = Resources.Load("chessboard_min2-bialy.mat", typeof(Material)) as Material;
+//        this._whiteItemMaterial = Resources.Load("wood_mahogany.mat", typeof(Material)) as Material;
+//
+//        this._highlightedCellMaterial = Resources.Load("HighlightedCell.mat", typeof(Material)) as Material;
     }
     #endregion
 
