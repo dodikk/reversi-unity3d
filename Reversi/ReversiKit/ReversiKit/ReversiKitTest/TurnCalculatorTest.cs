@@ -14,8 +14,6 @@ namespace ReversiKitTest
 		[SetUp]
 		public void SetUp()
 		{
-			this._sut = new TurnCalculator();
-
 			this._initialBoard = new MatrixBoard();
 			{
 				this._initialBoard.TryConsumeNamedCellByBlackPlayer("D4");
@@ -26,6 +24,8 @@ namespace ReversiKitTest
 
 				this._initialBoard.IsTurnOfBlackPlayer = true;
 			}
+
+			this._sut = new TurnCalculator(this._initialBoard);
 		}
 
 		[TearDown]
