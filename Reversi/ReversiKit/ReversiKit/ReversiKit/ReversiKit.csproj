@@ -65,7 +65,12 @@
     <Compile Include="..\..\..\Assets\ReversiKit\MatrixBoard.cs">
       <Link>Impl\MatrixBoard.cs</Link>
     </Compile>
-    <Compile Include="Impl\TurnCalculator.cs" />
+    <Compile Include="..\..\..\Assets\ReversiKit\ReversiTurnPOD.cs">
+      <Link>Impl\ReversiTurnPOD.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\ReversiKit\TurnCalculator.cs">
+      <Link>Impl\TurnCalculator.cs</Link>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
