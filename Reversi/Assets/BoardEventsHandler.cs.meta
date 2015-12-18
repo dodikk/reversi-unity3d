@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 675ce738300944c6aad497634f9164a2
-timeCreated: 1450447990
+timeCreated: 1450469833
 licenseType: Free
 MonoImporter:
   serializedVersion: 2
@@ -14,7 +14,7 @@ MonoImporter:
       type: 2}
   - _blackCellMaterial: {fileID: 2100000, guid: 6a7943cebacde4f51ac400b5fb305924,
       type: 2}
-  - _whiteCellMaterial: {fileID: 2100000, guid: 160df9e56774841b882f6879da069522,
+  - _whiteCellMaterial: {fileID: 2100000, guid: ff6d794d8d5624ad29a2be8573af4919,
       type: 2}
   - _ballD5: {instanceID: 0}
   - _ballE5: {instanceID: 0}

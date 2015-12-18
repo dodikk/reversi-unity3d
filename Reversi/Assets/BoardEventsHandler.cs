@@ -31,6 +31,7 @@ public class BoardEventsHandler : MonoBehaviour
 		populateBallsList();
 		populateCellsList ();
 		populateCellsMatrix ();
+        populateCellColours();
 		getAvailableTurns();
 	}
 	
@@ -104,16 +105,35 @@ public class BoardEventsHandler : MonoBehaviour
             this._whiteItemMaterial ;
 
 
-        this.setColourForCell(activePlayerColour, turn.Position);
+//        this.setColourForCell(activePlayerColour, turn.Position);
+
+        this.createBallWithColourAtCell(activePlayerColour, turn.Position);
         foreach (ICellCoordinates flippedCell in turn.PositionsOfFlippedItems)
         {
-            this.setColourForCell(activePlayerColour, flippedCell);
+            this.setColourForBallAtCell(activePlayerColour, flippedCell);
         }
     }
 
-    private void setColourForCell(Material activePlayerColour, ICellCoordinates cell)
+    private void createBallWithColourAtCell(Material activePlayerColour, ICellCoordinates cell)
     {
-        this._cellsMatrix[cell.Row, cell.Column].GetComponent<Renderer>().material = activePlayerColour;
+        var cellPosition = this._cellsMatrix[cell.Row, cell.Column].transform.position;
+
+        var sphere = GameObject.CreatePrimitive (PrimitiveType.Sphere);
+        {
+            sphere.transform.position = new Vector3(cellPosition.x + 0.1f, cellPosition.y, cellPosition.z - 1);
+            sphere.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
+            sphere.tag = BALL_TAG;
+
+            var renderer = sphere.GetComponent<Renderer>();
+            renderer.shadowCastingMode = ShadowCastingMode.Off;
+            renderer.receiveShadows = false;
+            renderer.material = this._blackItemMaterial;
+        }
+    }
+
+    private void setColourForBallAtCell(Material activePlayerColour, ICellCoordinates cell)
+    {
+        this._ballsMatrix[cell.Row, cell.Column].GetComponent<Renderer>().material = activePlayerColour;
     }
 
 	private void updateTurnLabel()
@@ -128,10 +148,6 @@ public class BoardEventsHandler : MonoBehaviour
 	{
 		var turns = this._turnCalculator.GetValidTurnsForBoard(this._boardModel);
 		this._validTurns = turns;
-		this._turnCellNames = turns.Select(t =>
-		{
-			return BoardCoordinatesConverter.CoordinatesToCellName(t.Position);
-		});
 	}
 
 	#region Turn Highlight
@@ -179,20 +195,9 @@ public class BoardEventsHandler : MonoBehaviour
 		ICellCoordinates newItemPosition = BoardCoordinatesConverter.CellNameToCoordinates("C5");
 		//UnityEngine.Debug.LogError("C5 coordinates : " + newItemPosition.Row.ToString() + ", " + newItemPosition.Column.ToString());
 
-		GameObject cellC5 = this._cellsMatrix[newItemPosition.Row, newItemPosition.Column];
-		var cellPosition = cellC5.transform.position;
+        this.createBallWithColourAtCell(this._blackItemMaterial, newItemPosition);
 
-		var sphere = GameObject.CreatePrimitive (PrimitiveType.Sphere);
-		{
-			sphere.transform.position = new Vector3(cellPosition.x + 0.1f, cellPosition.y, cellPosition.z - 1);
-			sphere.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
 
-			var renderer = sphere.GetComponent<Renderer>();
-			renderer.shadowCastingMode = ShadowCastingMode.Off;
-			renderer.receiveShadows = false;
-			renderer.material = this._blackItemMaterial;
-		}
-		this._ballsMatrix[newItemPosition.Row, newItemPosition.Column] = sphere;
 
 		// change material
 		ICellCoordinates d5Position = BoardCoordinatesConverter.CellNameToCoordinates("D5");
@@ -263,7 +268,15 @@ public class BoardEventsHandler : MonoBehaviour
 			this._mutableBoardModel.IsTurnOfBlackPlayer = true;
 		}
 	}
-	#endregion
+	
+    private void populateCellColours()
+    {
+        // Hot fix : the material references from the editor turn out to be "null"
+
+        this._blackCellMaterial = this._cellsMatrix[0, 0].GetComponent<Renderer>().material;
+        this._whiteCellMaterial = this._cellsMatrix[1, 0].GetComponent<Renderer>().material;
+    }
+    #endregion
 
 	#region GUI elements
 	public TextMesh _turnLabel; 
@@ -298,5 +311,4 @@ public class BoardEventsHandler : MonoBehaviour
 	private const string BALL_TAG   = 	   "Ball";
 
 	private IEnumerable<IReversiTurn> _validTurns	;
-	private IEnumerable<string> 	  _turnCellNames;
 }
