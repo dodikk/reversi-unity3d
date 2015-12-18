@@ -325,6 +325,44 @@ namespace ReversiKitTest
             Assert.AreEqual(expectedFlips, strSortedFlips);
         }
 
+
+        // 8 x x x x x x x x
+        // 7 x x x x x ? x x
+        // 6 x x x x B T x x
+        // 5 x x B B W T x x
+        // 4 x x x B W T x x
+        // 3 x x x x x T x x
+        // 2 x x x x x x x x
+        // 1 x x x x x x x x
+        //   A B C D E F G H
+        [Test]
+        public void TestExtraTurnForBlackBug()
+        {
+            var sut = new TurnCalculator();
+            var board = new MatrixBoard();
+            {
+                board.IsTurnOfBlackPlayer = true;
+
+                board.TryConsumeNamedCellByWhitePlayer("E4");
+                board.TryConsumeNamedCellByWhitePlayer("E5");
+
+                board.TryConsumeNamedCellByBlackPlayer("C5");
+                board.TryConsumeNamedCellByBlackPlayer("D5");
+                board.TryConsumeNamedCellByBlackPlayer("D4");
+                board.TryConsumeNamedCellByBlackPlayer("E6");
+            }
+
+
+            var result = sut.GetValidTurnsForBoard(board);
+            Assert.IsNotNull(result);
+            Assert.AreEqual(5, result.Count());
+
+            string strTurnPositions = BoardCoordinatesConverter.PrintTurnPositions(result);
+            string expectedTurnPositions = "E3; F3; F4; F5; F6";
+
+            Assert.AreEqual(expectedTurnPositions, strTurnPositions);
+        }
+
 		// 8 x x x x x x x x
 		// 7 x x x x x x x x
 		// 6 x x x x x x x x
