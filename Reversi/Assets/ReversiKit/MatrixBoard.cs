@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Linq;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace ReversiKit
 {
@@ -39,6 +42,66 @@ namespace ReversiKit
 		public bool IsCellTakenByWhite(ICellCoordinates position)
 		{
 			return (TAKEN_BY_WHITE == this._cells[position.Row, position.Column]);
+		}
+
+		public bool IsCellTakenByInactivePlayer(ICellCoordinates position)
+		{
+			if (this.IsTurnOfBlackPlayer)
+			{
+				return this.IsCellTakenByWhite(position);
+			}
+			else
+			{
+				return this.IsCellTakenByBlack(position);
+			}
+		}
+
+        public bool IsCellTakenByCurrentPlayer(ICellCoordinates position)
+		{
+			if (this.IsTurnOfBlackPlayer)
+			{
+				return this.IsCellTakenByBlack(position);
+			}
+			else
+			{
+				return this.IsCellTakenByWhite(position);
+			}
+		}
+
+
+
+		public IEnumerable<ICellCoordinates> GetEmptyEnemyNeighbours()
+		{
+			IEnumerable<ICellCoordinates> enemyCells = 
+				this._cells.Cast<ICellCoordinates>()
+						   .Where(c => this.IsCellTakenByInactivePlayer(c));
+
+			var result = 
+				enemyCells.SelectMany(c => this.GetNeighboursForCell(c))
+						  .Where(c => this.IsCellFree(c))
+					      .Distinct();
+
+			return result;
+		}
+
+		public IEnumerable<ICellCoordinates> GetNeighboursForCell(ICellCoordinates position)
+		{
+			var result = new List<ICellCoordinates>();
+
+			result.Add(new CellCoordinates(position.Row - 1, position.Column - 1));
+			result.Add(new CellCoordinates(position.Row - 1, position.Column));
+			result.Add(new CellCoordinates(position.Row - 1, position.Column + 1));
+
+			result.Add(new CellCoordinates(position.Row, position.Column - 1));
+			result.Add(new CellCoordinates(position.Row, position.Column + 1));
+
+			result.Add(new CellCoordinates(position.Row + 1, position.Column - 1));
+			result.Add(new CellCoordinates(position.Row + 1, position.Column));
+			result.Add(new CellCoordinates(position.Row + 1, position.Column + 1));
+
+
+
+			return result;
 		}
 		#endregion
 
@@ -83,9 +146,10 @@ namespace ReversiKit
 		#endregion
 
 
+
 		private int[,] _cells;
 
-		private const int BOARD_SIZE = 8;
+		public const int BOARD_SIZE = 8;
 
 		private const int FREE_CELL = 0;
 		private const int TAKEN_BY_WHITE = 1;

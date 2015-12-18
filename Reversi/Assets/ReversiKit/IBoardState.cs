@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ReversiKit
 {
@@ -9,6 +10,12 @@ namespace ReversiKit
 		bool IsCellFree(ICellCoordinates position);
 		bool IsCellTakenByBlack(ICellCoordinates position);
 		bool IsCellTakenByWhite(ICellCoordinates position);
+
+		bool IsCellTakenByCurrentPlayer(ICellCoordinates position);
+		bool IsCellTakenByInactivePlayer(ICellCoordinates position);
+
+		IEnumerable<ICellCoordinates> GetNeighboursForCell(ICellCoordinates position);
+		IEnumerable<ICellCoordinates> GetEmptyEnemyNeighbours();
 	}
 }
 
