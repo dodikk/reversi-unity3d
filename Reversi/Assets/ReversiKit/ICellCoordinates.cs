@@ -6,6 +6,8 @@ namespace ReversiKit
 	{
 		int Row {get;}
 		int Column {get;}
+        bool IsBlack {get;}
+        bool IsWhite {get;}
 	}
 }
 
