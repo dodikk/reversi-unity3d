@@ -56,6 +56,12 @@ namespace ReversiKit
 			return result;
 		}
 
+        public static string PrintTurnPositions(IEnumerable<IReversiTurn> turns)
+        {
+            var cells = turns.Select(t => t.Position);
+            return PrintCoordinates(cells);
+        }
+
         public static string PrintCoordinates(IEnumerable<ICellCoordinates> cells)
         {
             var resultNames = cells.Select(c => BoardCoordinatesConverter.CoordinatesToCellName(c));
