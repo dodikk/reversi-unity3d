@@ -129,6 +129,9 @@ public class BoardEventsHandler : MonoBehaviour {
 
 	public Material _whiteItemMaterial;
 	public Material _blackItemMaterial;
+	public Material _highlightedCellMaterial;
+	public Material _blackCellMaterial;
+	public Material _whiteCellMaterial;
 
 	public GameObject _ballD5;
 	public GameObject _ballE5;
