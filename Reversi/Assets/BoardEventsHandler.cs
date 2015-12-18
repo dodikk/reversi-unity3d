@@ -13,6 +13,10 @@ public class BoardEventsHandler : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
 	{
+		this._mutableBoardModel = new MatrixBoard();
+		this._turnCalculator = new TurnCalculator();
+		this._boardModel = this._mutableBoardModel;
+
 //		UnityEngine.Debug.developerConsoleVisible = true;
 //		UnityEngine.Debug.LogError("----Start-----");
 //		UnityEngine.Debug.LogError ("Turn label : " + this._turnLabel.ToString());
@@ -25,7 +29,9 @@ public class BoardEventsHandler : MonoBehaviour {
 		populateCellsList ();
 		populateCellsMatrix ();
 		setSampleTurnText ();
-		doSampleTurn ();
+		// doSampleTurn ();
+
+		highlightAvailableTurnsSample();
 	}
 	
 	// Update is called once per frame
@@ -66,7 +72,16 @@ public class BoardEventsHandler : MonoBehaviour {
 		}
 	}
 
-
+	private void highlightAvailableTurnsSample()
+	{
+		var turns = this._turnCalculator.GetValidTurnsForBoard(this._boardModel);
+		foreach (IReversiTurn singleTurn in turns)
+		{
+			ICellCoordinates turnCell = singleTurn.Position;
+			GameObject cellCube = this._cellsMatrix[turnCell.Row, turnCell.Column];
+			cellCube.GetComponent<Renderer>().material = this._highlightedCellMaterial;
+		}
+	}
 
 	private void populateCellsList()
 	{
@@ -107,19 +122,26 @@ public class BoardEventsHandler : MonoBehaviour {
 		{
 			var d4Pos = BoardCoordinatesConverter.CellNameToCoordinates("D4");
 			this._ballsMatrix[d4Pos.Row, d4Pos.Column] = this._ballD4;
+			this._mutableBoardModel.TryConsumeCellByBlackPlayer(d4Pos);
 
 			var d5Pos = BoardCoordinatesConverter.CellNameToCoordinates("D5");
 			this._ballsMatrix[d5Pos.Row, d5Pos.Column] = this._ballD5;
+			this._mutableBoardModel.TryConsumeCellByWhitePlayer(d5Pos);
 
 			var e4Pos = BoardCoordinatesConverter.CellNameToCoordinates("E4");
 			this._ballsMatrix[e4Pos.Row, e4Pos.Column] = this._ballE4;
+			this._mutableBoardModel.TryConsumeCellByWhitePlayer(e4Pos);
 
 			var e5Pos = BoardCoordinatesConverter.CellNameToCoordinates("E5");
 			this._ballsMatrix[e5Pos.Row, e5Pos.Column] = this._ballE5;
+			this._mutableBoardModel.TryConsumeCellByBlackPlayer(e5Pos);
+
+			this._mutableBoardModel.IsTurnOfBlackPlayer = true;
 		}
 	}
 	#endregion
 
+	#region GUI elements
 	public TextMesh _turnLabel; 
 
 	private GameObject _root;
@@ -137,6 +159,16 @@ public class BoardEventsHandler : MonoBehaviour {
 	public GameObject _ballE5;
 	public GameObject _ballD4;
 	public GameObject _ballE4;
+	#endregion
+
+	#region Model
+
+	private IBoardState 	_boardModel	      ;
+	private ITurnCalculator _turnCalculator	  ;
+	private MatrixBoard 	_mutableBoardModel;
+
+	#endregion
+
 
 	private static int BOARD_SIZE = 8;
 }
