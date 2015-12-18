@@ -37,8 +37,8 @@ public class BoardEventsHandler : MonoBehaviour
 	// Update is called once per frame
 	void Update() 
 	{
-		updateTurnLabel();
-		highlightAvailableTurns(true);
+		this.updateTurnLabel();
+		this.highlightAvailableTurns();
 
 		bool isMouseUpEvent = Input.GetMouseButtonUp(0);
 		if (isMouseUpEvent)
@@ -71,17 +71,50 @@ public class BoardEventsHandler : MonoBehaviour
 
 	private void handleTapOnCell(GameObject cellCube)
 	{
-		Material activePlayerColour = 
-			this._boardModel.IsTurnOfBlackPlayer ? 
-			this._blackItemMaterial : 
-			this._whiteItemMaterial ;
-
-
-		// TODO : maybe select 
+		// TODO : maybe compute matrix index by reference
 		string cellName = cellCube.name;
 
+		// TODO : extract query to ReversiKit
+		IReversiTurn turn = this._validTurns.Where(t =>
+		{
+			string turnPositionName = BoardCoordinatesConverter.CoordinatesToCellName(t.Position);
+			return cellName.Equals(turnPositionName);
+		}).First();
 
+
+		if (null != turn)
+		{
+			this.makeTurn(turn);
+		}
 	}
+
+	private void makeTurn(IReversiTurn turn)
+    {
+		this.unhighlightAvailableTurns();
+        this.drawChangesForTurn(turn);
+        this._boardModel.ApplyTurn(turn);
+        this.getAvailableTurns();
+	}
+
+    private void drawChangesForTurn(IReversiTurn turn)
+    {
+        Material activePlayerColour = 
+            this._boardModel.IsTurnOfBlackPlayer ? 
+            this._blackItemMaterial : 
+            this._whiteItemMaterial ;
+
+
+        this.setColourForCell(activePlayerColour, turn.Position);
+        foreach (ICellCoordinates flippedCell in turn.PositionsOfFlippedItems)
+        {
+            this.setColourForCell(activePlayerColour, flippedCell);
+        }
+    }
+
+    private void setColourForCell(Material activePlayerColour, ICellCoordinates cell)
+    {
+        this._cellsMatrix[cell.Row, cell.Column].GetComponent<Renderer>().material = activePlayerColour;
+    }
 
 	private void updateTurnLabel()
 	{
@@ -99,6 +132,17 @@ public class BoardEventsHandler : MonoBehaviour
 		{
 			return BoardCoordinatesConverter.CoordinatesToCellName(t.Position);
 		});
+	}
+
+	#region Turn Highlight
+	private void unhighlightAvailableTurns()
+	{
+		this.highlightAvailableTurns(false);
+	}
+
+	private void highlightAvailableTurns()
+	{
+		this.highlightAvailableTurns(true);
 	}
 
 	private void highlightAvailableTurns(bool shouldHighlight)
@@ -127,7 +171,7 @@ public class BoardEventsHandler : MonoBehaviour
 			cellCube.GetComponent<Renderer>().material = cellColour;
 		}
 	}
-		
+	#endregion	
 
 	#region Prototyping
 	private void doSampleTurn()
