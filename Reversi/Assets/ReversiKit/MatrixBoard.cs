@@ -184,6 +184,23 @@ namespace ReversiKit
 
 			return result;
 		}
+
+
+        public int NumberOfBlackPieces 
+        { 
+            get
+            {
+                return this._flattenCells.Count(c => this.IsCellTakenByBlack(c));
+            }
+        }
+
+        public int NumberOfWhitePieces 
+        { 
+            get
+            {
+                return this._flattenCells.Count(c => this.IsCellTakenByWhite(c));
+            }
+        }
 		#endregion
 
 		#region Mutable

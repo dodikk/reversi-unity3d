@@ -6,29 +6,28 @@ using Unity.Linq;
 using System.Linq;
 using ReversiKit;
 using System.Collections.Generic;
+using UnityEngine.UI;
+using System;
 
 public class BoardEventsHandler : MonoBehaviour 
 {
 	#region MonoBehaviour override
 	// Use this for initialization
-	void Start () 
+	void Start() 
 	{
 		this._mutableBoardModel = new MatrixBoard();
 		this._turnCalculator = new TurnCalculator();
 		this._boardModel = this._mutableBoardModel;
 
-//		UnityEngine.Debug.developerConsoleVisible = true;
-//		UnityEngine.Debug.LogError("----Start-----");
-//		UnityEngine.Debug.LogError ("Turn label : " + this._turnLabel.ToString());
-
-
 		this._root = GameObject.Find("root"); 
-//		UnityEngine.Debug.LogError ("Root : " + root.ToString ());
+
 
 
 		// Using lowercase methods in this class 
 		// to distinguish own methods from built-in unity methods
-		populateBallsList();
+		
+        populateLabels();
+        populateBallsList();
 		populateCellsList ();
 		populateCellsMatrix ();
         populateCellColours();
@@ -39,6 +38,7 @@ public class BoardEventsHandler : MonoBehaviour
 	void Update() 
 	{
 		this.updateTurnLabel();
+        this.updateScoreLabels();
         this.updateBallColours();
 		this.highlightAvailableTurns();
 
@@ -76,18 +76,28 @@ public class BoardEventsHandler : MonoBehaviour
 		// TODO : maybe compute matrix index by reference
 		string cellName = cellCube.name;
 
-		// TODO : extract query to ReversiKit
-		IReversiTurn turn = this._validTurns.Where(t =>
-		{
-			string turnPositionName = BoardCoordinatesConverter.CoordinatesToCellName(t.Position);
-			return cellName.Equals(turnPositionName);
-		}).First();
+        if (null == this._validTurns || 0 == this._validTurns.Count())
+        {
+            // TODO : Pass turn
+            // Or GameOver
+
+            return;
+        }
 
 
-		if (null != turn)
-		{
-			this.makeTurn(turn);
-		}
+        var turnsSetToMatchInput = this._validTurns.Where(t =>
+        {
+            string turnPositionName = BoardCoordinatesConverter.CoordinatesToCellName(t.Position);
+            return cellName.Equals(turnPositionName);
+        });
+
+        if (null == turnsSetToMatchInput || 0 == turnsSetToMatchInput.Count())
+        {
+            // TODO : maybe show alert
+            return;
+        }
+        IReversiTurn turn = turnsSetToMatchInput.First();
+		this.makeTurn(turn);
 	}
 
 	private void makeTurn(IReversiTurn turn)
@@ -171,6 +181,15 @@ public class BoardEventsHandler : MonoBehaviour
             }
     }
 
+    private void updateScoreLabels()
+    {
+        int blackScore = this._boardModel.NumberOfBlackPieces;
+        int whiteScore = this._boardModel.NumberOfWhitePieces;
+
+        this._blackScoreLabel.text = "Black : " + Convert.ToString(blackScore);
+        this._whiteScoreLabel.text = "White : " + Convert.ToString(whiteScore);
+    }
+
 	#region Turn Highlight
 	private void unhighlightAvailableTurns()
 	{
@@ -185,6 +204,11 @@ public class BoardEventsHandler : MonoBehaviour
 	private void highlightAvailableTurns(bool shouldHighlight)
 	{
 		var turns = this._validTurns;
+        if (null == turns)
+        {
+            // win condition will be checked in user input processing code
+            return;
+        }
 
 		foreach (IReversiTurn singleTurn in turns)
 		{
@@ -321,10 +345,22 @@ public class BoardEventsHandler : MonoBehaviour
 //
 //        this._highlightedCellMaterial = Resources.Load("HighlightedCell.mat", typeof(Material)) as Material;
     }
+
+    private void populateLabels()
+    {
+        var labels = FindObjectsOfType<Text>();
+
+
+        this._turnLabel       = labels.Where(l => "TurnLabel"  == l.name).First();
+        this._blackScoreLabel = labels.Where(l => "BlackScore" == l.name).First();
+        this._whiteScoreLabel = labels.Where(l => "WhiteScore" == l.name).First();
+    }
     #endregion
 
 	#region GUI elements
-	public TextMesh _turnLabel; 
+	public Text _turnLabel; 
+    public Text _blackScoreLabel;
+    public Text _whiteScoreLabel;
 
 	private GameObject _root;
 	private GameObject[] _cellsList;
