@@ -2,6 +2,8 @@
 using System.Diagnostics;
 using System.Collections.Generic;
 
+// TODO : Make NuGet work properly with Unity3D
+// 
 #if NO_UNITY
 using Conditions.Guards;
 #endif
