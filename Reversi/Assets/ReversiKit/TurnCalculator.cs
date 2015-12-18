@@ -10,20 +10,15 @@ namespace ReversiKit
 {
 	public class TurnCalculator : ITurnCalculator
 	{
-		public TurnCalculator(IBoardState board)
-		{
-			this._board = board;
-		}
-			
 		#region ITurnCalculator
 		public IEnumerable<IReversiTurn> GetValidTurnsForBoard(IBoardState board)
 		{
-			var turnCandidates = this._board.GetEmptyEnemyNeighbours();
+			var turnCandidates = board.GetEmptyEnemyNeighbours();
 
 			var result = new List<IReversiTurn>();
 			foreach (ICellCoordinates cell in turnCandidates)
 			{
-				var turn = this.TurnForCell(cell);
+				var turn = this.TurnForCellOnBoard(cell, board);
                 if (null == turn)
                 {
                     continue;
@@ -42,12 +37,14 @@ namespace ReversiKit
 		}
 		#endregion
 
-        private IReversiTurn TurnForCell(ICellCoordinates turnCandidate)
+        private IReversiTurn TurnForCellOnBoard(
+            ICellCoordinates turnCandidate, 
+            IBoardState board)
 		{
-			var cellNeighbours = this._board.GetNeighboursForCell(turnCandidate);
+			var cellNeighbours = board.GetNeighboursForCell(turnCandidate);
 			var directions = cellNeighbours.Where(n =>
 			{
-                return this._board.IsCellTakenByInactivePlayer(n);
+                return board.IsCellTakenByInactivePlayer(n);
 			});
 
 
@@ -55,7 +52,10 @@ namespace ReversiKit
             foreach (ICellCoordinates singleDirection in directions)
             {
                 IEnumerable<ICellCoordinates> flippedCells = 
-                    this.FlippedCellsForDirectionOfTurn(singleDirection, turnCandidate);
+                    this.FlippedCellsForDirectionOfTurnOnBoard(
+                        singleDirection, 
+                        turnCandidate,
+                        board);
 
                 if (null != flippedCells)
                 {
@@ -79,9 +79,10 @@ namespace ReversiKit
             return result;
 		}
 
-        private IEnumerable<ICellCoordinates> FlippedCellsForDirectionOfTurn(
+        private IEnumerable<ICellCoordinates> FlippedCellsForDirectionOfTurnOnBoard(
             ICellCoordinates direction, 
-            ICellCoordinates turnCandidate)
+            ICellCoordinates turnCandidate,
+            IBoardState      board)
         {
             var result = new List<ICellCoordinates>();
 
@@ -99,12 +100,12 @@ namespace ReversiKit
             while (current.Row    >= 0 && current.Row    < MatrixBoard.BOARD_SIZE &&
                    current.Column >= 0 && current.Column < MatrixBoard.BOARD_SIZE)
             {
-                if (this._board.IsCellTakenByInactivePlayer(current))
+                if (board.IsCellTakenByInactivePlayer(current))
                 {
                     var currentClone = current.Clone() as CellCoordinates;
                     result.Add(currentClone);
                 }
-                else if (this._board.IsCellTakenByCurrentPlayer(current))
+                else if (board.IsCellTakenByCurrentPlayer(current))
                 {
                     isMyColourFound = true;
                     break;
@@ -125,8 +126,6 @@ namespace ReversiKit
 
             return result;
         }
-
-		private IBoardState _board;
 	}
 }
 
