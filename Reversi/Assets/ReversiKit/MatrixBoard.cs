@@ -2,6 +2,11 @@
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+
+#if NO_UNITY
+using Conditions.Guards;
+#endif
 
 namespace ReversiKit
 {
@@ -26,21 +31,56 @@ namespace ReversiKit
 				}
 		}
 
+        // TODO : optimize.
+        // reduce memory footprint
+        private IEnumerable<ICellCoordinates> FlattenCells()
+        {
+            if (null != this._flattenCells)
+            {
+                return this._flattenCells;
+            }
+
+            this._flattenCells = new ICellCoordinates[BOARD_SIZE * BOARD_SIZE];
+            for (int row = 0; row != BOARD_SIZE; ++row)
+                for (int col = 0; col != BOARD_SIZE; ++col) 
+                {
+                    this._flattenCells[row * BOARD_SIZE + col] = new CellCoordinates(row, col);
+                }
+
+            return this._flattenCells;
+        }
+
+
 		#region IBoardState
 		public bool IsTurnOfBlackPlayer { get; set; }
 
 		public  bool IsCellFree(ICellCoordinates position)
 		{
+            #if NO_UNITY
+            Check.If(position.Row   ).IsBetween(0, BOARD_SIZE - 1);
+            Check.If(position.Column).IsBetween(0, BOARD_SIZE - 1);
+            #endif
+
 			return (FREE_CELL == this._cells[position.Row, position.Column]);
 		}
 
 		public bool IsCellTakenByBlack(ICellCoordinates position)
 		{
+            #if NO_UNITY
+            Check.If(position.Row).IsBetween(0, BOARD_SIZE - 1);
+            Check.If(position.Column).IsBetween(0, BOARD_SIZE - 1);
+            #endif
+
 			return (TAKEN_BY_BLACK == this._cells[position.Row, position.Column]);
 		}
 
 		public bool IsCellTakenByWhite(ICellCoordinates position)
 		{
+            #if NO_UNITY
+            Check.If(position.Row   ).IsBetween(0, BOARD_SIZE - 1);
+            Check.If(position.Column).IsBetween(0, BOARD_SIZE - 1);
+            #endif
+
 			return (TAKEN_BY_WHITE == this._cells[position.Row, position.Column]);
 		}
 
@@ -69,17 +109,21 @@ namespace ReversiKit
 		}
 
 
-
 		public IEnumerable<ICellCoordinates> GetEmptyEnemyNeighbours()
 		{
 			IEnumerable<ICellCoordinates> enemyCells = 
-				this._cells.Cast<ICellCoordinates>()
-						   .Where(c => this.IsCellTakenByInactivePlayer(c));
+                this.FlattenCells()
+                    .Where(c => this.IsCellTakenByInactivePlayer(c));
 
-			var result = 
+            IEnumerable<ICellCoordinates> result = 
 				enemyCells.SelectMany(c => this.GetNeighboursForCell(c))
 						  .Where(c => this.IsCellFree(c))
 					      .Distinct();
+
+
+            var resultNames = result.Select(c => BoardCoordinatesConverter.CoordinatesToCellName(c));
+            string debugResultNames = String.Join("; ", resultNames.ToArray());
+            Debug.WriteLine(debugResultNames);
 
 			return result;
 		}
@@ -88,16 +132,47 @@ namespace ReversiKit
 		{
 			var result = new List<ICellCoordinates>();
 
-			result.Add(new CellCoordinates(position.Row - 1, position.Column - 1));
-			result.Add(new CellCoordinates(position.Row - 1, position.Column));
-			result.Add(new CellCoordinates(position.Row - 1, position.Column + 1));
+            if (0 != position.Row)
+            {
+                if (0 != position.Column)
+                {
+                    result.Add(new CellCoordinates(position.Row - 1, position.Column - 1));
+                }
+                    
+                result.Add(new CellCoordinates(position.Row - 1, position.Column));
 
-			result.Add(new CellCoordinates(position.Row, position.Column - 1));
-			result.Add(new CellCoordinates(position.Row, position.Column + 1));
+                if (BOARD_SIZE != position.Column)
+                {
+                    result.Add(new CellCoordinates(position.Row - 1, position.Column + 1));
+                }
+            }
 
-			result.Add(new CellCoordinates(position.Row + 1, position.Column - 1));
-			result.Add(new CellCoordinates(position.Row + 1, position.Column));
-			result.Add(new CellCoordinates(position.Row + 1, position.Column + 1));
+            {
+                if (0 != position.Column)
+                {
+                    result.Add(new CellCoordinates(position.Row, position.Column - 1));
+                }
+
+                if (BOARD_SIZE != position.Column)
+                {
+                    result.Add(new CellCoordinates(position.Row, position.Column + 1));
+                }
+            }
+
+            if (BOARD_SIZE != position.Row)
+            {
+                if (0 != position.Column)
+                {
+                    result.Add(new CellCoordinates(position.Row + 1, position.Column - 1));
+                }
+
+                result.Add(new CellCoordinates(position.Row + 1, position.Column));
+
+                if (BOARD_SIZE != position.Column)
+                {
+                    result.Add(new CellCoordinates(position.Row + 1, position.Column + 1));
+                }
+            }
 
 
 
@@ -123,6 +198,11 @@ namespace ReversiKit
 				throw new ArgumentOutOfRangeException ("cellPosition", cellPosition, "Cell already taken.");
 			}
 
+
+            #if NO_UNITY
+            Check.If(cellPosition.Row   ).IsBetween(0, BOARD_SIZE - 1);
+            Check.If(cellPosition.Column).IsBetween(0, BOARD_SIZE - 1);
+            #endif
 			this._cells [cellPosition.Row, cellPosition.Column] = isBlackPlayer ? TAKEN_BY_BLACK : TAKEN_BY_WHITE;
 		}
 		#endregion
@@ -146,8 +226,12 @@ namespace ReversiKit
 		#endregion
 
 
-
+        // state of the board
 		private int[,] _cells;
+
+        // a bunch of constants for LINQ
+        // TODO : optimize
+        private ICellCoordinates[] _flattenCells;
 
 		public const int BOARD_SIZE = 8;
 
