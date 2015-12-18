@@ -21,7 +21,7 @@ namespace ReversiKit
 		}
 
 
-
+        #region Utils
 		private void ZeroCells()
 		{
 			for (int row = 0; row != BOARD_SIZE; ++row)
@@ -49,7 +49,7 @@ namespace ReversiKit
 
             return this._flattenCells;
         }
-
+        #endregion
 
 		#region IBoardState
 		public bool IsTurnOfBlackPlayer { get; set; }
@@ -230,6 +230,20 @@ namespace ReversiKit
 			this.TryConsumeNamedCellByBlackPlayer(cellName, false);
 		}
 		#endregion
+
+        public void ApplyTurn(IReversiTurn turn)
+        {
+            int newState = this.IsTurnOfBlackPlayer ? TAKEN_BY_BLACK : TAKEN_BY_WHITE;
+
+
+            this._cells[turn.Position.Row, turn.Position.Column] = newState;
+            foreach (ICellCoordinates flippedCell in turn.PositionsOfFlippedItems)
+            {
+                this._cells[flippedCell.Row, flippedCell.Column] = newState;
+            }
+
+            this.IsTurnOfBlackPlayer = !this.IsTurnOfBlackPlayer;
+        }
 
 
         // state of the board

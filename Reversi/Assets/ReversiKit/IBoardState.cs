@@ -16,6 +16,8 @@ namespace ReversiKit
 
 		IEnumerable<ICellCoordinates> GetNeighboursForCell(ICellCoordinates position);
 		IEnumerable<ICellCoordinates> GetEmptyEnemyNeighbours();
+
+        void ApplyTurn(IReversiTurn turn);
 	}
 }
 
