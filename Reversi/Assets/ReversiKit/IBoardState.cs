@@ -19,9 +19,11 @@ namespace ReversiKit
 
         int NumberOfBlackPieces { get; }
         int NumberOfWhitePieces { get; }
+        int NumberOfFreeCells { get; }
 
 
         void ApplyTurn(IReversiTurn turn);
+        void PassTurn();
 	}
 }
 

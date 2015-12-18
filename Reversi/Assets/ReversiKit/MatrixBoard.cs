@@ -201,6 +201,14 @@ namespace ReversiKit
                 return this._flattenCells.Count(c => this.IsCellTakenByWhite(c));
             }
         }
+
+        public int NumberOfFreeCells 
+        { 
+            get
+            {
+                return this._flattenCells.Count(c => this.IsCellFree(c));
+            }
+        }
 		#endregion
 
 		#region Mutable
@@ -259,9 +267,18 @@ namespace ReversiKit
                 this._cells[flippedCell.Row, flippedCell.Column] = newState;
             }
 
-            this.IsTurnOfBlackPlayer = !this.IsTurnOfBlackPlayer;
+            this.DoPassTurn();
         }
 
+        public void PassTurn()
+        {
+            this.DoPassTurn();
+        }
+
+        private void DoPassTurn()
+        {
+            this.IsTurnOfBlackPlayer = !this.IsTurnOfBlackPlayer;
+        }
 
         // state of the board
 		private int[,] _cells;

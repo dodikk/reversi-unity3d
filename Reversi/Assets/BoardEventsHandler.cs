@@ -15,6 +15,8 @@ public class BoardEventsHandler : MonoBehaviour
 	// Use this for initialization
 	void Start() 
 	{
+        this._isGameOver = false;
+
 		this._mutableBoardModel = new MatrixBoard();
 		this._turnCalculator = new TurnCalculator();
 		this._boardModel = this._mutableBoardModel;
@@ -78,8 +80,19 @@ public class BoardEventsHandler : MonoBehaviour
 
         if (null == this._validTurns || 0 == this._validTurns.Count())
         {
-            // TODO : Pass turn
-            // Or GameOver
+            // Passing the turn if current user can't make it.
+            this._boardModel.PassTurn();
+
+
+            // Game over ???
+            this.getAvailableTurns();
+            if (null == this._validTurns || 0 == this._validTurns.Count())
+            {
+                // Yes. Game over.
+
+                this._turnLabel.text = "Game Over";
+                this._isGameOver = true;
+            }
 
             return;
         }
@@ -107,6 +120,12 @@ public class BoardEventsHandler : MonoBehaviour
         this._boardModel.ApplyTurn(turn);
         this.getAvailableTurns();
         this.highlightAvailableTurns();
+
+        if (0 == this._boardModel.NumberOfFreeCells)
+        {
+            this._turnLabel.text = "Game Over";
+            this._isGameOver = true;
+        }
 	}
 
     private void drawChangesForTurn(IReversiTurn turn)
@@ -152,6 +171,11 @@ public class BoardEventsHandler : MonoBehaviour
 
 	private void updateTurnLabel()
 	{
+        if (this._isGameOver)
+        {
+            return;
+        }
+
 		this._turnLabel.text = 
 			this._boardModel.IsTurnOfBlackPlayer ? 
 			"Black Player Turn" :
@@ -392,4 +416,5 @@ public class BoardEventsHandler : MonoBehaviour
 	private const string BALL_TAG   = 	   "Ball";
 
 	private IEnumerable<IReversiTurn> _validTurns	;
+    bool _isGameOver;
 }
