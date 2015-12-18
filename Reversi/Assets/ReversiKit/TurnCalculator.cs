@@ -113,6 +113,9 @@ namespace ReversiKit
                 {
                     break;
                 }
+
+                current.Row += rowIncrement;
+                current.Column += columnIncrement;
             }
                 
             if (!isMyColourFound)
