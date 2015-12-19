@@ -151,6 +151,8 @@ public class BoardEventsHandler : MonoBehaviour
 	}
     #endregion 
 
+
+    #region AI Player Turn
     private IEnumerator coroutineMakeTurnByAI()
     {
         while (this.IsTurnOfAI)
@@ -187,6 +189,7 @@ public class BoardEventsHandler : MonoBehaviour
             return !this._boardModel.IsTurnOfBlackPlayer;
         }
     }
+    #endregion 
 
         
     #region Turn Drawing
