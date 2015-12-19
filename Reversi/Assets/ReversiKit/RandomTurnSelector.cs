@@ -11,6 +11,11 @@ namespace ReversiKit
             IEnumerable<IReversiTurn> validTurns, 
             IBoardState board)
         {
+            if (null == validTurns)
+            {
+                return null;
+            }
+
             Random rand = new Random();
             int index = rand.Next(0, validTurns.Count());
         

@@ -10,6 +10,11 @@ namespace ReversiKit
             IEnumerable<IReversiTurn> validTurns, 
             IBoardState board)
         {
+            if (null == validTurns)
+            {
+                return null;
+            }
+
             IReversiTurn result = 
                 validTurns.OrderByDescending(t => t.PositionsOfFlippedItems.Count())
                           .First();

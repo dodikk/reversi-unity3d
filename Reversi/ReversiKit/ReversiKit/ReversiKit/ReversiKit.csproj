@@ -89,8 +89,8 @@
     <Compile Include="..\..\..\Assets\ReversiKit\CornerTurnSelector.cs">
       <Link>Impl\CornerTurnSelector.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\Assets\ReversiKit\GreedyBorderTurnSelector.cs">
-      <Link>Impl\GreedyBorderTurnSelector.cs</Link>
+    <Compile Include="..\..\..\Assets\ReversiKit\CompositeTurnSelector.cs">
+      <Link>Impl\CompositeTurnSelector.cs</Link>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
