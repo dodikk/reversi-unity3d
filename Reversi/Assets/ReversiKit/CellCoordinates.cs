@@ -64,6 +64,32 @@ namespace ReversiKit
             }
         }
 
+        public bool IsCorner 
+        { 
+            get
+            {
+                bool isA1 = (this.Row == 0                           || this.Column == 0);
+                bool isA8 = (this.Row == MatrixBoard.BOARD_MAX_INDEX || this.Column == 0);
+                bool isH1 = (this.Row == 0                           || this.Column == MatrixBoard.BOARD_MAX_INDEX);
+                bool isH8 = (this.Row == MatrixBoard.BOARD_MAX_INDEX || this.Column == MatrixBoard.BOARD_MAX_INDEX);
+
+                return isA1 || isA8 || isH1 || isH8;
+            }
+        }
+            
+        public bool IsBorder 
+        { 
+            get
+            {
+                bool isBottom = (this.Row == 0);
+                bool isTop = (this.Row == MatrixBoard.BOARD_MAX_INDEX);
+                bool isLeft = (this.Column == 0);
+                bool isRight = (this.Column == MatrixBoard.BOARD_MAX_INDEX);
+
+                return isBottom || isTop || isLeft || isRight;
+            }
+        }
+
 		#endregion
 	}
 }

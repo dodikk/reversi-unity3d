@@ -8,6 +8,9 @@ namespace ReversiKit
 		int Column {get;}
         bool IsBlack {get;}
         bool IsWhite {get;}
+
+        bool IsCorner { get; }
+        bool IsBorder { get; }
 	}
 }
 
