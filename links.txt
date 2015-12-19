@@ -1,3 +1,5 @@
+fonts workaround : https://socapex.wordpress.com/2015/12/05/crispy-text-in-unity3d/
+
 http://habrahabr.ru/post/195970/
 
 
