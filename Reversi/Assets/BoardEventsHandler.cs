@@ -129,10 +129,7 @@ public class BoardEventsHandler : MonoBehaviour
 
         if (IS_OPPONENT_PLAYER_AI)
         {
-            while (this.IsTurnOfAI)
-            {
-                this.makeTurnByAI();
-            }
+            StartCoroutine("coroutineMakeTurnByAI");
         }
 	}
 
@@ -153,6 +150,15 @@ public class BoardEventsHandler : MonoBehaviour
         }
 	}
     #endregion 
+
+    private IEnumerator coroutineMakeTurnByAI()
+    {
+        while (this.IsTurnOfAI)
+        {
+            yield return new WaitForSeconds(TURN_ANIMATION_DELAY);
+            this.makeTurnByAI();
+        }
+    }
 
     private void makeTurnByAI()
     {
@@ -468,6 +474,7 @@ public class BoardEventsHandler : MonoBehaviour
 	private const int    BOARD_SIZE = 			8;
 	private const string CELL_TAG   = "FieldCell";
 	private const string BALL_TAG   = 	   "Ball";
+    private const float TURN_ANIMATION_DELAY = 0.5f;
 
 	private IEnumerable<IReversiTurn> _validTurns	;
     bool _isGameOver;
