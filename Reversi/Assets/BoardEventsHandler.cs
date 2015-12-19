@@ -118,27 +118,11 @@ public class BoardEventsHandler : MonoBehaviour
 		string cellName = cellCube.name;
         ICellCoordinates selectedCellPosition = BoardCoordinatesConverter.CellNameToCoordinates(cellName);
 
-        if (null == this._validTurns || 0 == this._validTurns.Count())
+        if (tryPassTurnOrGameOver())
         {
-            // Passing the turn if current user can't make it.
-            this._boardModel.PassTurn();
-
-
-            // Game over ???
-            this.getAvailableTurns();
-            if (null == this._validTurns || 0 == this._validTurns.Count())
-            {
-                // Yes. Game over.
-
-                this._turnLabel.text = "Game Over";
-                this._isGameOver = true;
-            }
-
             return;
         }
-
-
-
+            
 
         var turnValidator = new SearchInSetTurnValidator(this._validTurns);
         bool isSelectedTurnValid = turnValidator.IsValidPositionForTurnOnBoard(selectedCellPosition, this._boardModel);
@@ -163,6 +147,30 @@ public class BoardEventsHandler : MonoBehaviour
         }
 	}
 
+    private bool tryPassTurnOrGameOver()
+    {
+        if (null == this._validTurns || 0 == this._validTurns.Count())
+        {
+            // Passing the turn if current user can't make it.
+            this._boardModel.PassTurn();
+
+
+            // Game over ???
+            this.getAvailableTurns();
+            if (null == this._validTurns || 0 == this._validTurns.Count())
+            {
+                // Yes. Game over.
+
+                this._turnLabel.text = "Game Over";
+                this._isGameOver = true;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
     #endregion Human Player Turn
 
     #region AI Player Turn
@@ -177,6 +185,11 @@ public class BoardEventsHandler : MonoBehaviour
 
     private void makeTurnByAI()
     {
+        if (tryPassTurnOrGameOver())
+        {
+            return;
+        }
+
         IReversiTurn selectedTurn = 
             this._turnSelector.SelectBestTurnOnBoard(
                 this._validTurns, 
