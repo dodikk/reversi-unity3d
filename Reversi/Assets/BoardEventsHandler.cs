@@ -463,7 +463,7 @@ public class BoardEventsHandler : MonoBehaviour
 
 	#endregion
 
-    private bool IS_OPPONENT_PLAYER_AI = false;
+    private bool IS_OPPONENT_PLAYER_AI = true;
 
 	private const int    BOARD_SIZE = 			8;
 	private const string CELL_TAG   = "FieldCell";
