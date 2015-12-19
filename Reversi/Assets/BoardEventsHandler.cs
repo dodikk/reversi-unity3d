@@ -11,15 +11,21 @@ using System;
 
 public class BoardEventsHandler : MonoBehaviour 
 {
+    #region Config
+    private bool IS_OPPONENT_PLAYER_AI = true;
+    private const float TURN_ANIMATION_DELAY = 0.5f;
+    #endregion
+
 	#region MonoBehaviour override
 	// Use this for initialization
 	void Start() 
 	{
         this._isGameOver = false;
 
-		this._mutableBoardModel = new MatrixBoard();
+        var board = new MatrixBoard();
+        this._boardModel = board;
+        this._mutableBoardModel = board;
 		this._turnCalculator    = new TurnCalculator();
-		this._boardModel        = this._mutableBoardModel;
         this._turnSelector      = new GreedyTurnSelector();
 
 		this._root = GameObject.Find("root"); 
@@ -53,12 +59,29 @@ public class BoardEventsHandler : MonoBehaviour
 	}
 	#endregion
 
+    #region Turns Logic
     private void getAvailableTurns()
     {
         var turns = this._turnCalculator.GetValidTurnsForBoard(this._boardModel);
         this._validTurns = turns;
     }
 
+    private void makeTurn(IReversiTurn turn)
+    {
+        this.unhighlightAvailableTurns();
+        this.drawChangesForTurn(turn);
+        this._boardModel.ApplyTurn(turn);
+        this.getAvailableTurns();
+        this.highlightAvailableTurns();
+
+        if (0 == this._boardModel.NumberOfFreeCells)
+        {
+            this._turnLabel.text = "Game Over";
+            this._isGameOver = true;
+
+            return;
+        }
+    }
 
     #region Human Player Turn
 	private void handleMouseUpEvent()
@@ -138,24 +161,7 @@ public class BoardEventsHandler : MonoBehaviour
         }
 	}
 
-	private void makeTurn(IReversiTurn turn)
-    {
-		this.unhighlightAvailableTurns();
-        this.drawChangesForTurn(turn);
-        this._boardModel.ApplyTurn(turn);
-        this.getAvailableTurns();
-        this.highlightAvailableTurns();
-
-        if (0 == this._boardModel.NumberOfFreeCells)
-        {
-            this._turnLabel.text = "Game Over";
-            this._isGameOver = true;
-
-            return;
-        }
-	}
-    #endregion 
-
+    #endregion Human Player Turn
 
     #region AI Player Turn
     private IEnumerator coroutineMakeTurnByAI()
@@ -195,8 +201,8 @@ public class BoardEventsHandler : MonoBehaviour
         }
     }
     #endregion 
+    #endregion Turns Logic
 
-        
     #region Turn Drawing
     private void drawChangesForTurn(IReversiTurn turn)
     {
@@ -442,18 +448,17 @@ public class BoardEventsHandler : MonoBehaviour
 
 	private IBoardState 	_boardModel	      ;
 	private ITurnCalculator _turnCalculator	  ;
-	private MatrixBoard 	_mutableBoardModel;
+    private IBoardActions 	_mutableBoardModel;
     private ITurnSelector   _turnSelector     ;
+    private IEnumerable<IReversiTurn> _validTurns   ;
+    bool _isGameOver;
 
 	#endregion
 
-    private bool IS_OPPONENT_PLAYER_AI = true;
-
+    #region Constants
 	private const int    BOARD_SIZE = 			8;
 	private const string CELL_TAG   = "FieldCell";
 	private const string BALL_TAG   = 	   "Ball";
-    private const float TURN_ANIMATION_DELAY = 0.5f;
+    #endregion
 
-	private IEnumerable<IReversiTurn> _validTurns	;
-    bool _isGameOver;
 }
