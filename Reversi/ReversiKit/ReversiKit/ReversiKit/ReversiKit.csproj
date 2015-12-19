@@ -83,9 +83,15 @@
     <Compile Include="..\..\..\Assets\ReversiKit\SearchInSetTurnValidator.cs">
       <Link>Impl\SearchInSetTurnValidator.cs</Link>
     </Compile>
-    <Compile Include="Impl\CornerTurnSelector.cs" />
-    <Compile Include="Impl\BorderTurnSelector.cs" />
-    <Compile Include="Impl\GreedyBorderTurnSelector.cs" />
+    <Compile Include="..\..\..\Assets\ReversiKit\BorderTurnSelector.cs">
+      <Link>Impl\BorderTurnSelector.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\ReversiKit\CornerTurnSelector.cs">
+      <Link>Impl\CornerTurnSelector.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\ReversiKit\GreedyBorderTurnSelector.cs">
+      <Link>Impl\GreedyBorderTurnSelector.cs</Link>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
