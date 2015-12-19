@@ -75,14 +75,6 @@ public class BoardEventsHandler : MonoBehaviour
         this._boardModel.ApplyTurn(turn);
         this.getAvailableTurns();
         this.highlightAvailableTurns();
-
-        if (0 == this._boardModel.NumberOfFreeCells)
-        {
-            this._turnLabel.text = "Game Over";
-            this._isGameOver = true;
-
-            return;
-        }
     }
 
     #region Human Player Turn
@@ -149,6 +141,14 @@ public class BoardEventsHandler : MonoBehaviour
 
     private bool tryPassTurnOrGameOver()
     {
+        if (0 == this._boardModel.NumberOfFreeCells)
+        {
+            this._turnLabel.text = "Game Over";
+            this._isGameOver = true;
+
+            return true;
+        }
+
         if (null == this._validTurns || 0 == this._validTurns.Count())
         {
             // Passing the turn if current user can't make it.
