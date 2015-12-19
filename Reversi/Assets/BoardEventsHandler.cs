@@ -23,18 +23,20 @@ public class BoardEventsHandler : MonoBehaviour
         this._isGameOver = false;
 
         var board = new MatrixBoard();
-        this._boardModel = board;
-        this._mutableBoardModel = board;
+        {
+            this._boardModel        = board;
+            this._mutableBoardModel = board;
+        }
 		this._turnCalculator    = new TurnCalculator();
-        this._turnSelector      = new GreedyTurnSelector();
+        this._turnSelector      = TurnSelectorBuilder.CreateCornerAndGreedyTurnSelector();
 
-		this._root = GameObject.Find("root"); 
+		
 
+        this._root = GameObject.Find("root"); 
 
 
 		// Using lowercase methods in this class 
 		// to distinguish own methods from built-in unity methods
-		
         populateLabels();
         populateBallsList();
 		populateCellsList ();
