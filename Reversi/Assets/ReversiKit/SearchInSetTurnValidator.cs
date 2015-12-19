@@ -15,7 +15,12 @@ namespace ReversiKit
             ICellCoordinates turnPosition, 
             IBoardState board)
         {
-            throw new NotImplementedException();
+            var matchingTurns = this._validTurns.Where(t =>
+            {
+                return t.Position.Equals(turnPosition);
+            });
+
+            return (0 != matchingTurns.Count());
         }
 
         private IEnumerable<IReversiTurn> _validTurns;

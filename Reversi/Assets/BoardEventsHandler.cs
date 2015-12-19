@@ -91,6 +91,7 @@ public class BoardEventsHandler : MonoBehaviour
 
 		// TODO : maybe compute matrix index by reference
 		string cellName = cellCube.name;
+        ICellCoordinates selectedCellPosition = BoardCoordinatesConverter.CellNameToCoordinates(cellName);
 
         if (null == this._validTurns || 0 == this._validTurns.Count())
         {
@@ -112,18 +113,22 @@ public class BoardEventsHandler : MonoBehaviour
         }
 
 
-        var turnsSetToMatchInput = this._validTurns.Where(t =>
-        {
-            string turnPositionName = BoardCoordinatesConverter.CoordinatesToCellName(t.Position);
-            return cellName.Equals(turnPositionName);
-        });
 
-        if (null == turnsSetToMatchInput || 0 == turnsSetToMatchInput.Count())
+
+        var turnValidator = new SearchInSetTurnValidator(this._validTurns);
+        bool isSelectedTurnValid = turnValidator.IsValidPositionForTurnOnBoard(selectedCellPosition, this._boardModel);
+        if (!isSelectedTurnValid)
         {
             // TODO : maybe show alert
             return;
         }
-        IReversiTurn turn = turnsSetToMatchInput.First();
+            
+
+        IReversiTurn turn = this._validTurns.Where(t =>
+        {
+            string turnPositionName = BoardCoordinatesConverter.CoordinatesToCellName(t.Position);
+            return cellName.Equals(turnPositionName);
+        }).First();
 		this.makeTurn(turn);
 
 
