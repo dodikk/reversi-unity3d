@@ -53,7 +53,14 @@ public class BoardEventsHandler : MonoBehaviour
 	}
 	#endregion
 
+    private void getAvailableTurns()
+    {
+        var turns = this._turnCalculator.GetValidTurnsForBoard(this._boardModel);
+        this._validTurns = turns;
+    }
 
+
+    #region Human Player Turn
 	private void handleMouseUpEvent()
 	{
 		Vector3 mousePosition = Input.mousePosition;
@@ -76,6 +83,12 @@ public class BoardEventsHandler : MonoBehaviour
 
 	private void handleTapOnCell(GameObject cellCube)
 	{
+        if (this.IsTurnOfAI)
+        {
+            return;
+        }
+
+
 		// TODO : maybe compute matrix index by reference
 		string cellName = cellCube.name;
 
@@ -112,6 +125,15 @@ public class BoardEventsHandler : MonoBehaviour
         }
         IReversiTurn turn = turnsSetToMatchInput.First();
 		this.makeTurn(turn);
+
+
+        if (IS_OPPONENT_PLAYER_AI)
+        {
+            while (this.IsTurnOfAI)
+            {
+                this.makeTurnByAI();
+            }
+        }
 	}
 
 	private void makeTurn(IReversiTurn turn)
@@ -126,9 +148,42 @@ public class BoardEventsHandler : MonoBehaviour
         {
             this._turnLabel.text = "Game Over";
             this._isGameOver = true;
+
+            return;
         }
 	}
+    #endregion 
 
+    private void makeTurnByAI()
+    {
+        IReversiTurn selectedTurn = 
+            this._turnSelector.SelectBestTurnOnBoard(
+                this._validTurns, 
+                this._boardModel);
+
+        this.makeTurn(selectedTurn);
+    }
+
+    private bool IsTurnOfAI
+    { 
+        get
+        {
+            if (this._isGameOver)
+            {
+                return false;
+            }
+
+            if (!this.IS_OPPONENT_PLAYER_AI)
+            {
+                return false;
+            }
+
+            return !this._boardModel.IsTurnOfBlackPlayer;
+        }
+    }
+
+        
+    #region Turn Drawing
     private void drawChangesForTurn(IReversiTurn turn)
     {
         Material activePlayerColour = 
@@ -183,12 +238,6 @@ public class BoardEventsHandler : MonoBehaviour
 			"White Player Turn" ;
 	}
 
-	private void getAvailableTurns()
-	{
-		var turns = this._turnCalculator.GetValidTurnsForBoard(this._boardModel);
-		this._validTurns = turns;
-	}
-
     private void updateBallColours()
     {
         for (int row = 0; row != BOARD_SIZE; ++row)
@@ -214,6 +263,7 @@ public class BoardEventsHandler : MonoBehaviour
         this._blackScoreLabel.text = "Black : " + Convert.ToString(blackScore);
         this._whiteScoreLabel.text = "White : " + Convert.ToString(whiteScore);
     }
+    #endregion
 
 	#region Turn Highlight
 	private void unhighlightAvailableTurns()
@@ -413,7 +463,7 @@ public class BoardEventsHandler : MonoBehaviour
 
 	#endregion
 
-    private static bool IS_OPPONENT_PLAYER_AI = false;
+    private bool IS_OPPONENT_PLAYER_AI = false;
 
 	private const int    BOARD_SIZE = 			8;
 	private const string CELL_TAG   = "FieldCell";
