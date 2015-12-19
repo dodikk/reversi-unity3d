@@ -77,8 +77,12 @@
     <Compile Include="..\..\..\Assets\ReversiKit\RandomTurnSelector.cs">
       <Link>Impl\RandomTurnSelector.cs</Link>
     </Compile>
-    <Compile Include="IBoardActions.cs" />
-    <Compile Include="Impl\SearchInSetTurnValidator.cs" />
+    <Compile Include="..\..\..\Assets\ReversiKit\IBoardActions.cs">
+      <Link>IBoardActions.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\ReversiKit\SearchInSetTurnValidator.cs">
+      <Link>Impl\SearchInSetTurnValidator.cs</Link>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
