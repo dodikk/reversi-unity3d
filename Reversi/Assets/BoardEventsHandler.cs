@@ -315,44 +315,14 @@ public class BoardEventsHandler : MonoBehaviour
 	}
 	#endregion	
 
-	#region Prototyping
-	private void doSampleTurn()
-	{
-		ICellCoordinates newItemPosition = BoardCoordinatesConverter.CellNameToCoordinates("C5");
-		//UnityEngine.Debug.LogError("C5 coordinates : " + newItemPosition.Row.ToString() + ", " + newItemPosition.Column.ToString());
-
-        this.createBallWithColourAtCell(this._blackItemMaterial, newItemPosition);
-
-
-
-		// change material
-		ICellCoordinates d5Position = BoardCoordinatesConverter.CellNameToCoordinates("D5");
-		//		GameObject cellD5 = this._cellsMatrix[d5Position.Row, d5Position.Column];
-		GameObject ballD5 = this._ballsMatrix[d5Position.Row, d5Position.Column];
-		{
-			var d5Renderer = ballD5.GetComponent<Renderer>();
-			d5Renderer.material = this._blackItemMaterial;
-		}
-	}
-
-	private void setSampleTurnText()
-	{
-		var cellPosition = BoardCoordinatesConverter.CellNameToCoordinates("C2");
-
-		GameObject C2CellFromMatrix = this._cellsMatrix[cellPosition.Row, cellPosition.Column];
-		this._turnLabel.text = C2CellFromMatrix.name;
-
-		//		UnityEngine.Debug.LogError ("A1Cell matrix name : " + A1CellFromMatrix.name);
-		//		UnityEngine.Debug.LogError ("Turn text : " + this._turnLabel.text);
-	}
-
-	#endregion
-
 	#region Cells Initialization
 	private void populateCellsList()
 	{
-		this._cellsList = this._root.Descendants().Where(x => x.tag == "FieldCell").OrderBy(x => x.name).ToArray();
-		//		UnityEngine.Debug.LogError ("Cells count : " + this._cellsList.Length.ToString ());
+		this._cellsList = 
+            this._root.Descendants()
+                      .Where(x => x.tag == "FieldCell")
+                      .OrderBy(x => x.name)
+                      .ToArray();
 	}
 
 	private void populateCellsMatrix()
