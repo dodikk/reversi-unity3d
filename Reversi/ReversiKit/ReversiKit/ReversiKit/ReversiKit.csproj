@@ -77,6 +77,7 @@
     <Compile Include="..\..\..\Assets\ReversiKit\RandomTurnSelector.cs">
       <Link>Impl\RandomTurnSelector.cs</Link>
     </Compile>
+    <Compile Include="IBoardActions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

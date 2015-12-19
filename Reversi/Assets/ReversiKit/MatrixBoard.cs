@@ -10,7 +10,7 @@ using Conditions.Guards;
 
 namespace ReversiKit
 {
-	public class MatrixBoard : IBoardState
+    public class MatrixBoard : IBoardState, IBoardActions
 	{
 		public MatrixBoard ()
 		{
