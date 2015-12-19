@@ -18,8 +18,9 @@ public class BoardEventsHandler : MonoBehaviour
         this._isGameOver = false;
 
 		this._mutableBoardModel = new MatrixBoard();
-		this._turnCalculator = new TurnCalculator();
-		this._boardModel = this._mutableBoardModel;
+		this._turnCalculator    = new TurnCalculator();
+		this._boardModel        = this._mutableBoardModel;
+        this._turnSelector      = new GreedyTurnSelector();
 
 		this._root = GameObject.Find("root"); 
 
@@ -408,8 +409,11 @@ public class BoardEventsHandler : MonoBehaviour
 	private IBoardState 	_boardModel	      ;
 	private ITurnCalculator _turnCalculator	  ;
 	private MatrixBoard 	_mutableBoardModel;
+    private ITurnSelector   _turnSelector     ;
 
 	#endregion
+
+    private static bool IS_OPPONENT_PLAYER_AI = false;
 
 	private const int    BOARD_SIZE = 			8;
 	private const string CELL_TAG   = "FieldCell";
