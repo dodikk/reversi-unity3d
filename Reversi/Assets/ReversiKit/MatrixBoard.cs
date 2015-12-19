@@ -211,6 +211,28 @@ namespace ReversiKit
         }
 		#endregion
 
+        #region IBoardActions
+        public void ApplyTurn(IReversiTurn turn)
+        {
+            int newState = this.IsTurnOfBlackPlayer ? TAKEN_BY_BLACK : TAKEN_BY_WHITE;
+
+
+            this._cells[turn.Position.Row, turn.Position.Column] = newState;
+            foreach (ICellCoordinates flippedCell in turn.PositionsOfFlippedItems)
+            {
+                this._cells[flippedCell.Row, flippedCell.Column] = newState;
+            }
+
+            this.DoPassTurn();
+        }
+
+        public void PassTurn()
+        {
+            this.DoPassTurn();
+        }
+
+
+
 		#region Mutable
 		public void TryConsumeCellByBlackPlayer(ICellCoordinates cellPosition)
 		{
@@ -236,7 +258,7 @@ namespace ReversiKit
             #endif
 			this._cells [cellPosition.Row, cellPosition.Column] = isBlackPlayer ? TAKEN_BY_BLACK : TAKEN_BY_WHITE;
 		}
-		#endregion
+        #endregion Mutable
 
 		#region Mutable Text
 		public void TryConsumeNamedCellByBlackPlayer(string cellName, bool isBlackPlayer)
@@ -254,26 +276,9 @@ namespace ReversiKit
 		{
 			this.TryConsumeNamedCellByBlackPlayer(cellName, false);
 		}
-		#endregion
+        #endregion Mutable Text
+        #endregion IBoardActions
 
-        public void ApplyTurn(IReversiTurn turn)
-        {
-            int newState = this.IsTurnOfBlackPlayer ? TAKEN_BY_BLACK : TAKEN_BY_WHITE;
-
-
-            this._cells[turn.Position.Row, turn.Position.Column] = newState;
-            foreach (ICellCoordinates flippedCell in turn.PositionsOfFlippedItems)
-            {
-                this._cells[flippedCell.Row, flippedCell.Column] = newState;
-            }
-
-            this.DoPassTurn();
-        }
-
-        public void PassTurn()
-        {
-            this.DoPassTurn();
-        }
 
         private void DoPassTurn()
         {
