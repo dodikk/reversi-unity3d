@@ -71,6 +71,12 @@
     <Compile Include="..\..\..\Assets\ReversiKit\TurnCalculator.cs">
       <Link>Impl\TurnCalculator.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\Assets\ReversiKit\GreedyTurnSelector.cs">
+      <Link>Impl\GreedyTurnSelector.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\ReversiKit\RandomTurnSelector.cs">
+      <Link>Impl\RandomTurnSelector.cs</Link>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
